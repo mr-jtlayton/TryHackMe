@@ -1,0 +1,52 @@
+AA		30 Nov 2023		Wireshark Traffic Analysis (WTA), ICMP
+AB		30 Nov 2023		WTA, DNS
+AC		30 Nov 2023		WTA, Cleartext Protocol Analysis, FTP
+AD		30 Nov 2023		WTA, HTTP
+AE		30 Nov 2023		WTA, HTTPS 
+
+
+AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
+
+AA - A seperate point of interest was pointed out by the video guide. The intial pings were being sent out on the second every second. It was hard for me to distinguish a pattern after awhile, but very obvious at first. Further research shows that this regular interval between pings is an abnormal behavior, either malicious or begnign, but worth noting eitherway.
+
+AA - Next I will investigate the payloads to see if anything of interest is shown in plaintext. Packet #46 had the largest payload yet. Lots of mention of diffie-hellman key exchange, SHA hashing algorithms, SSH RSA, and much more. Not sure what this indicates... so some research is warranted
+
+AA - ChatGPT help break down the situation. The text I found in the large ICMP packet is typical language for SSH negotiation parameters. The client and server are working out the agreement for key exchange. What is strange is that ICMP is not the typically used to transport SSH data. Very much so noteworthy.
+
+AA - Before I continue, I wanted to review the OSI model because I think it is easy to understand when seeing it laid out in Wireshark. All of the layers except for Layer 1 (Physical), Layer 5 (Session), and Layer 6 (Presentation) are not shown in Wireshark.
+Layer 2 - Data Link Layer: Represented as "Ethernet" or other link-layer protocol
+Layer 3 - Network Layer: Represented by "Internet Protocol"
+Layer 4 - Transport Layer: Displayed as TCP or UDP
+Layer 7 - Application Layer: examples include HTTPS, DNS, and ICMP.
+
+AA - Back on topic. After the initial key exchange that was performed, most of the payloads were unreadable. In packet 132 I found "test local" which was consistently in packets from that point on. Research says this is also abnormal, which I had no clue it was. ICMP packets are generally used for control messages and error reporting. So to see "testlocal" in the payload signifies that it has been injected.
+
+AA - SUMMARY. I determined the following indicators of compromise: Large size/payload ICMP packets, SSH and key exchange over ICMP, and deliberate inclusion of a string "test local" in the ICMP payload.
+
+AB - New task and initial walkthrough. I see a multitude of different protocols, but the main protocol is DNS. I remember DNS as the phone book of the internet. I filter by dns because that is the topic. The queries start of small <200 bytes. I begin to notice amongst binary text the term 'datexfil com". Supposedly this is abnormal, but I wouldn't have known that.
+
+AB - Video guide suggested to right click "Name" under the DNS "Queries" and add it as a column so I can quickly identify any abnormalities. Well that was easy. I sort by smallest because most of the names are obfuscated and unreadable. Once sorted I scroll to the top and wallah! DNS Cat and the data exfil sites were right there. I learned that DNS Cat is a solid IoC because DNS Cat is used by attackers to establish covert communication between compromised systems and C2 servers (Command and Control).
+
+AB - On a random note, I learned what "Defanging" is today. probably for the second time. More importantly is the purpose of defanging something. By putting the brackets around the period ([.]) I reduce the likelihood of this url or code being used accidently because it would have to be defanged prior.
+
+AB - SUMMARY. When it comes to finding abnormal DNS traffic it is not as useful to sort by length. I learned that larger lengths mean larger payloads which should've been more obvious. I still benefited from going through the payloads quickly to look for any clear text IoCs. That's how I stumbled upon it before doing it the easier way which was by adding the DNS query name column. I will likely use this feature moving forward. I also understand defanging better.
+
+AC - FTP has more clear text in the comments than the previous two protocols (ICMP and DNS) which makes spotting abnormalities in the info column easier. Initially I see one bad login attempt and then someone used the admin user name but did not provide a password. Keeping an eye for that. Now I can see the actual data being passwed into the password column. I also see that is failing to authenticate.
+
+AC - So this seems to be a brute-force attack using words the attacker may have gathered from recon and social engineering, because they aren't your typical run of the mill passwords.
+
+AC - The video guide recommends going into the FTP data on a failed login packet and drag/dropping the "Response arg: Login incorrect." text into the display filter so that we only see these packets. This provides us with the information that there were 737 brute-force login attempts! Restarted my AttackBox machine and it was suprisingly not slow yet.
+
+AC - Now I use the following filter: ftp contains "ftp", to find all packets that have a mention of the word "ftp" in clear text. This is an easy trick with FTP given the nature of the plain text used in this protocol. In my parenthesis I could use a different username or password if I was interested. At this point I am going to filter down to TCP conversations. This is cool because now I can see that the attacker successfully logged in and I can see all of his communication with the CLI. I know exactly what he is doing now.
+
+AC - SUMMARY. FTP can be an easier protocol to follow what's going on. I learned the importance of using filters and that I don't necessarily need to memorize filter, but rather drag and drop them or right click to apply them. The next valuable thing I learned here was how to follow TCP conversations and why. This allowed me to easily follow the conversation between the attacker and his target which is all thanks to FTP being unsecure.
+
+AD - I'm trying to determine the # of different user-agents, which is located under the HTTP content information. I wanted to try doing this myself using the new techniques I've learned so I applied new filter using a single user agent and then changed the filter to be not-equal to that. This is probably inefficient. Yeah totally is. Next I tried to create a column for User-Agent and sort/count it that way, but I was not able to get the correct answer.
+
+AD - SUMMARY. Video guide shows that I wasn't far off. I need to pay better attention the user-agent text especially towards the end of the name. I was seeing Mozilla and automatically thought it was an ok user agent. What I failed to see was the Mozilla was mispelt as Mozlila and also mentions the Nmap Scripting Engine which should all be red flags. Ultimately, I just didn't know what was an normal/abnormal user agent name. Video guide recommends extracting this pcap and using tshark to comb through unique user-agents in the CLI. I also learned that an attacks starting phase will be associated with a POST command, or the other way around. Inside the post I found the attackers attempt to chmod and run a shell. It was encoded in base64 so I used cyberchef to decode this. I learned how to use tools->credentials in Wireshark to have the software gather all the potential login credentials found in the PCAP.
+
+AE - Startted of realigning columns to their content. Checked the data link layer of the "Client Hello" packet to find frame number. Next I needed to decrypt the HTTPS traffic using a conveinently had cipher key. To implement this into Wireshark I went to Edit -> Preferences -> Protocols -> TLS -> and uploaded the key I had into the "(Pre)-Master-Secret log filename.
+
+AE - I know that the cipher key worked because now my Wireshark packets have either a HTTP2 or TLSv1.3 protocol listed in the respective column. HTTP2 means that the application layer data will now be in plain text and TLSv1.3 will show me the transport layer data, but unfortunately not the application layer stuff. I located the authority header under the application layer data. Next I used the search feature and looked for the THM flag by searching "flag{" and done.
+
+AE - SUMMARY. I learned how to decipher HTTPS traffic once a key has been acquired. I am not sure how to come into possession of the key, but I am sure that will come in time. I learned how to identify decrypted HTTPS data as HTTP2 and practiced applying OSI networking terms like application layer. All good things.
