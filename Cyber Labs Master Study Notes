@@ -5,9 +5,9 @@ AB		30 Nov 2023		WTA, DNS
 AC		30 Nov 2023		WTA, Cleartext Protocol Analysis, FTP
 AD		30 Nov 2023		WTA, HTTP
 AE		30 Nov 2023		WTA, HTTPS
-AF    02 Dec 2023   THM, Day 2 Cyber Advent, Data Science applied to Cybersecurity, Python (Pandas and Matplotlib), Jupyter
-AG    02 Dec 2023   Core Windows Processes, Task Manager
-AH    03 Dec 2023   THM, Day 3 Cyber Advent, Brute-forcing with Hydra and Crunch
+AF      02 Dec 2023     THM, Day 2 Cyber Advent, Data Science + Cybersecurity, Python (Pandas and Matplotlib), Jupyter
+AG      02 Dec 2023     Core Windows Processes, Task Manager
+AH      03 Dec 2023     THM, Day 3 Cyber Advent, Brute-forcing with Hydra and Crunch
 
 
 
@@ -86,11 +86,11 @@ AG - SUMMARY. Some processes are only started by other processes. System always 
 
 AH - Ok this was awesome. I find brute-forcing to be very interesting and using Crunch/Hydra is new to me. First, I determined the maximum number of characters that could be used. In this case it was a pin pad so the minimum and maximum amount of characters were the same, 3. I had 0-9 and A-F as options so that gives us 16 possible characters over a 3 character pin. Crunch generated 4096 possiblities. The crunch command as follows: crunch 3 3 0123456789ABCDEF -o 3digits.txt This sets the min and max characters to 3, specifies the possibile characters and gives an output file that will be used later.
 
-AH - Hydra time. Here is the command: hydra -l '' -P 3digits.txt -f -v 10.10.59.67 http-post-form "/login.php:pin=^PASS^:Access denied" -s 8000 . To break this dowm, -l '' tells hydra to login with no username because nothing was specified between the quotes. -P 3digits.txt tells hydra to use my crunch created password list. -f and -v tells hydra to stop when login is successfull and provide a verbose output should I need to troubleshoot. We include the IP address of the login portal, we specift that we are using HTTP post method to submit our password to the server, and the next part is a little tricky. "/login.php:pin=^PASS^:Access denied" is actually three sections separated by a colon. When I view the access portal source code I can see that /login.php is the page where the password is submitted and pin=^PASS^ tells hydra to submit the passwords from my list at this point in the web transaction. We also include the text that would be displayed if the password failed, which is "Access denied". This works and I have entry.
+AH - Hydra time. Here is the command: hydra -l '' -P 3digits.txt -f -v 10.10.59.67 http-post-form "/login.php:pin=^PASS^:Access denied" -s 8000 . To break this dowm, -l '' tells hydra to login with no username because nothing was specified between the quotes. -P 3digits.txt tells hydra to use my crunch created password list. -f and -v tells hydra to stop when login is successfull and provide a verbose output should I need to troubleshoot. We include the IP address of the login portal, we specift that we are using HTTP post method to submit our password to the server, and the next part is a little tricky. "/login.php:pin=^PASS^:Access denied" is actually three sections separated by colons. When I view the access portal source code I can see that /login.php is the page where the password is submitted and pin=^PASS^ tells hydra to submit the passwords from my list at this point in the web transaction. We also include the text that would be displayed if the password failed, which is "Access denied". This works and I have entry.
 
 AH - SUMMARY. Very fun box. I used crunch to create a password list that doesn't waste time with any password that are not possibilities. This required a small amount of enumeration like going to the website and seeing what the pin pad wou
 
-
+AI - 
 
 
 
