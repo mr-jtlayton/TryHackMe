@@ -2,7 +2,12 @@ AA		30 Nov 2023		Wireshark Traffic Analysis (WTA), ICMP
 AB		30 Nov 2023		WTA, DNS
 AC		30 Nov 2023		WTA, Cleartext Protocol Analysis, FTP
 AD		30 Nov 2023		WTA, HTTP
-AE		30 Nov 2023		WTA, HTTPS 
+AE		30 Nov 2023		WTA, HTTPS
+AF    02 Dec 2023   THM, Day 2 Cyber Advent, Data Science applied to Cybersecurity, Python (Pandas and Matplotlib), Jupyter
+AG    02 Dec 2023   Core Windows Processes, Task Manager
+AH -  0
+
+
 
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
@@ -50,3 +55,44 @@ AE - Startted of realigning columns to their content. Checked the data link laye
 AE - I know that the cipher key worked because now my Wireshark packets have either a HTTP2 or TLSv1.3 protocol listed in the respective column. HTTP2 means that the application layer data will now be in plain text and TLSv1.3 will show me the transport layer data, but unfortunately not the application layer stuff. I located the authority header under the application layer data. Next I used the search feature and looked for the THM flag by searching "flag{" and done.
 
 AE - SUMMARY. I learned how to decipher HTTPS traffic once a key has been acquired. I am not sure how to come into possession of the key, but I am sure that will come in time. I learned how to identify decrypted HTTPS data as HTTP2 and practiced applying OSI networking terms like application layer. All good things.
+
+AF - I had a feeling I would enjoy this task. I was first more interested in "Data Analytics" than I was in Cybersecurity. This was mostly because I didn't fully grasp the world of Cyber. I still haven't, but I know a whole lot more. I am excited to learn how data science can be applied to Cybersecurity. I think I will have a better idea of what direction I want to take after this room.
+
+AF - Some of this is a review. I took a Python class in October and I am in a Coursera Python class too. Using Jupyiter I practiced python3 strings, variables, and lists. I imported panda via: import panda as pd, importing it as a smaller amount of text makes it easier to recall this tool. This was able to create a numbered list as long as I gave it the items and the column names, rows were automatically numbered. Next we used Matplotlib. To import we used: import matplotlib.pyplot as plt , again using a shorter name to call the tool later. Supposedly matplotlib acts wierd in Juypiter so I used the following command to keep it in line: %matplotlib inline . Next plt.plot() creates a line graph/plot.
+
+AF - Now for the capstone challenge where I use everything I just learned about to include Python3, Panda, and MatPlotLib. First we import our libraries of course. Next I dentify the documents that I will be referencing and open up a fresh slate. First to aggregate the data I used:
+df = pd.read_csv('network_traffic.csv')
+df.head(5)
+#df stands for data frame and I use it as a variable set to use panda to read a csv file and specify the name of the file
+#df.head(5) calls my df variable to read the file specified and print the first 5 rows.
+next I use df.count()
+#again calling my df variable and using the count method to coun the number of rows for each column.
+next command: df.groupby(['Source']).size().sort_values(ascending=False)
+#this one is much more complicated. Calling the df variable and several methods. First we are grouping by the column called source which is the IP address column. Then we use the size method and sort values method to create a list showing us which IP addresses were listed the most times in the source document. We do this one more using the protocol column.
+
+AF - SUMMARY. The video guide for this task spoke alot to the importance of using python and data science tools to become a master cyber analyst. This lesson reinforced that idea with me and I plan to spend more time. I learned about some python tools that can be imported for making data analytics and visualization easier. I am still not comfortable with using these tools without a guide but that will come with time. The tools I used today were Panda and MatPlotLib.
+
+AG - I used stuffy24's video guide to pace me through the lesson. He believes this is an important lesson because being familiar with the baseline Windows processees will help me identify and abnormal processes a.k.a Indicator of Compromise. First I learned how to view Process ID #s in task manager along with other columns by right clicking the columns. I had used PIDs during the Metasploit rooms, specifically when using Meterpreter to take over processes/services.
+
+AG - I selected all columns to be visible via right clicking column headers and I wanted to pay special attention to 'Type', 'Publisher', and 'Command Line' because these are the ones that are not defaulted on and therefore I am the least familiar with. I did this on my own computer instead of the VM because I wanted exposure to what was going on with my own machine. I noticed that some processes belonged to Microsoft as two separate entities to include Microsoft Windows and Microsoft Corporation. Adobe had some processes going which made me curious because I have no clue why Adobe is running. AMD processes made since with the CPU and GPU software running in the background. Discord had a surprising number of background processes as did Oculus which I don't use enough to allow that to consume resources. Moving on I noticed when it came to PID that the numbers seem to be assigned chronologically at boot and so on. PID 4 is always 'System'. Process types considered 'Apps' seem to be only things that I can actively see on my screen i.e., Chrome and Task Manager. Windows processes seem to be things that are necessary to allow the computer and operating system to do the things that they were designed to do. Seeing the command line language was interesting. One thing I draw from this is we can see if the process is being run from a legit place or not. This also reinforces how much more difficult Windows command line is compared to Linux, at least in my opinion. I think that I will definitely use Linux as my main OS when I build my next computer in many years. Distracted agian. Last I looked at the consumed resources data and noticed that Chrome consumes a lot of memory and so does the combination of many of my background tasks. I think that I will need to add 2 more 16gb RAM sticks in the future. Chrome is also CPU intensive and power intensive.
+
+AG - The video guide mentions to pay attention to the Command Line info, for example a printer's exe file shouldn't have a command line prompt that calls to communicate with an server elsewhere. Stuff like that. We went over the Process Hacker tool which is a better task manager, but may not be available on a corporate end user machine. Same thing for Process Explorer. The video guide goes on to explain the importance of not being limited by tools and to have the skills to perform functions without special tools. Out of curiousity I asked GPT how to find parent processes without fancy tools.
+
+AG - I can view parent processes using CMD and the following commands; wmic process where "Name='System'" get Caption,ParentProcessId,ProcessId. Another method would be to replace the Name=System part with ProcessID=7376 or some other number.
+
+AG - SUMMARY. Some processes are only started by other processes. System always has a PID of 4. System is always the parent of smss.exe and anything else should be concerning. The process smss.exe will only show up in task manager when it is starting up another process and then it will disappear which is what is known as a non-existant process (when checking the parent). There should always be 2 instances of csrss.exe running known as session 0 and session 1. These processes should always have a non-existent parent. winlogon.exe is the ALT+CTRL+DELETE key combo used prior to entering the user and pass. Wininit.exe is started by smss.exe instance which disappears. Wininit.exe -> services.exe -> svchost.exe. Userinit.exe spawns explorer.exe and causes explorer.exe to have a non-existent parent.
+
+AH- I learned that everything that is done on a Windows based computer is logged and can be viewed in the Event Viewer. The example I saw today was the history of powershell commands that were ran. Event ID 4104 correlates to executing a remote command.
+
+
+
+
+
+
+
+
+
+
+
+
+
