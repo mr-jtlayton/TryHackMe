@@ -1,3 +1,5 @@
+INDEX - CTRL + F "XX - SUMMARY" to jump to summarized paragraph on speciified topic.
+
 AA		30 Nov 2023		Wireshark Traffic Analysis (WTA), ICMP
 AB		30 Nov 2023		WTA, DNS
 AC		30 Nov 2023		WTA, Cleartext Protocol Analysis, FTP
@@ -5,7 +7,7 @@ AD		30 Nov 2023		WTA, HTTP
 AE		30 Nov 2023		WTA, HTTPS
 AF    02 Dec 2023   THM, Day 2 Cyber Advent, Data Science applied to Cybersecurity, Python (Pandas and Matplotlib), Jupyter
 AG    02 Dec 2023   Core Windows Processes, Task Manager
-AH -  0
+AH    03 Dec 2023   THM, Day 3 Cyber Advent, Brute-forcing with Hydra and Crunch
 
 
 
@@ -61,14 +63,14 @@ AF - I had a feeling I would enjoy this task. I was first more interested in "Da
 AF - Some of this is a review. I took a Python class in October and I am in a Coursera Python class too. Using Jupyiter I practiced python3 strings, variables, and lists. I imported panda via: import panda as pd, importing it as a smaller amount of text makes it easier to recall this tool. This was able to create a numbered list as long as I gave it the items and the column names, rows were automatically numbered. Next we used Matplotlib. To import we used: import matplotlib.pyplot as plt , again using a shorter name to call the tool later. Supposedly matplotlib acts wierd in Juypiter so I used the following command to keep it in line: %matplotlib inline . Next plt.plot() creates a line graph/plot.
 
 AF - Now for the capstone challenge where I use everything I just learned about to include Python3, Panda, and MatPlotLib. First we import our libraries of course. Next I dentify the documents that I will be referencing and open up a fresh slate. First to aggregate the data I used:
-df = pd.read_csv('network_traffic.csv')
-df.head(5)
-#df stands for data frame and I use it as a variable set to use panda to read a csv file and specify the name of the file
-#df.head(5) calls my df variable to read the file specified and print the first 5 rows.
-next I use df.count()
-#again calling my df variable and using the count method to coun the number of rows for each column.
-next command: df.groupby(['Source']).size().sort_values(ascending=False)
-#this one is much more complicated. Calling the df variable and several methods. First we are grouping by the column called source which is the IP address column. Then we use the size method and sort values method to create a list showing us which IP addresses were listed the most times in the source document. We do this one more using the protocol column.
+    df = pd.read_csv('network_traffic.csv')
+    df.head(5)
+    #df stands for data frame and I use it as a variable set to use panda to read a csv file and specify the name of the file
+    #df.head(5) calls my df variable to read the file specified and print the first 5 rows.
+    next I use df.count()
+    #again calling my df variable and using the count method to coun the number of rows for each column.
+    next command: df.groupby(['Source']).size().sort_values(ascending=False)
+    #this one is much more complicated. Calling the df variable and several methods. First we are grouping by the column called source which is the IP address column. Then we use the size method and sort values method to create a list showing us which IP addresses were listed the most times in the source document. We do this one more using the protocol column.
 
 AF - SUMMARY. The video guide for this task spoke alot to the importance of using python and data science tools to become a master cyber analyst. This lesson reinforced that idea with me and I plan to spend more time. I learned about some python tools that can be imported for making data analytics and visualization easier. I am still not comfortable with using these tools without a guide but that will come with time. The tools I used today were Panda and MatPlotLib.
 
@@ -82,7 +84,11 @@ AG - I can view parent processes using CMD and the following commands; wmic proc
 
 AG - SUMMARY. Some processes are only started by other processes. System always has a PID of 4. System is always the parent of smss.exe and anything else should be concerning. The process smss.exe will only show up in task manager when it is starting up another process and then it will disappear which is what is known as a non-existant process (when checking the parent). There should always be 2 instances of csrss.exe running known as session 0 and session 1. These processes should always have a non-existent parent. winlogon.exe is the ALT+CTRL+DELETE key combo used prior to entering the user and pass. Wininit.exe is started by smss.exe instance which disappears. Wininit.exe -> services.exe -> svchost.exe. Userinit.exe spawns explorer.exe and causes explorer.exe to have a non-existent parent.
 
-AH- I learned that everything that is done on a Windows based computer is logged and can be viewed in the Event Viewer. The example I saw today was the history of powershell commands that were ran. Event ID 4104 correlates to executing a remote command.
+AH - Ok this was awesome. I find brute-forcing to be very interesting and using Crunch/Hydra is new to me. First, I determined the maximum number of characters that could be used. In this case it was a pin pad so the minimum and maximum amount of characters were the same, 3. I had 0-9 and A-F as options so that gives us 16 possible characters over a 3 character pin. Crunch generated 4096 possiblities. The crunch command as follows: crunch 3 3 0123456789ABCDEF -o 3digits.txt This sets the min and max characters to 3, specifies the possibile characters and gives an output file that will be used later.
+
+AH - Hydra time. Here is the command: hydra -l '' -P 3digits.txt -f -v 10.10.59.67 http-post-form "/login.php:pin=^PASS^:Access denied" -s 8000 . To break this dowm, -l '' tells hydra to login with no username because nothing was specified between the quotes. -P 3digits.txt tells hydra to use my crunch created password list. -f and -v tells hydra to stop when login is successfull and provide a verbose output should I need to troubleshoot. We include the IP address of the login portal, we specift that we are using HTTP post method to submit our password to the server, and the next part is a little tricky. "/login.php:pin=^PASS^:Access denied" is actually three sections separated by a colon. When I view the access portal source code I can see that /login.php is the page where the password is submitted and pin=^PASS^ tells hydra to submit the passwords from my list at this point in the web transaction. We also include the text that would be displayed if the password failed, which is "Access denied". This works and I have entry.
+
+AH - SUMMARY. Very fun box. I used crunch to create a password list that doesn't waste time with any password that are not possibilities. This required a small amount of enumeration like going to the website and seeing what the pin pad wou
 
 
 
