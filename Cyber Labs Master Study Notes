@@ -94,7 +94,9 @@ AI - Finally some good stuff after the boring Windows-based rooms that were putt
 
 AI - SUMMARY. I used Kibana to practice filtering my query to gain specific results. I found a way I think is easiest to filter. Say I want to find "John" and the only name I see is "Will". Well I can filter by Will and then edit the filter to say John. Easy day. I learned the Kibana Query Language. Honestly seemed very forgiving. Next was to create some visualizations. Here I was able to create visuals that would probably be appealing for presenting to others, but I think I'd rather have the data. Neat feature though.
 
-AJ - 
+AJ - Revisiting OSI again. A network switch is just a way to complete the circuit. In one connection and out another. Example is telephone operators connecting phone lines through the physical application (way back in the day). Data link layer is switching, uses MAC addresses. Network layer uses IP addresses to connect numerous networks, does routing. Transport layer is mainly made up of Transmission Control Protocol and User Datagram Protocol, uses ports. Being a Next Gen Firewall means you can do Layer 7 analysis which is also known as a DPI or Deep Packet Inspection to see the actual data that is being passed over a network.
+
+AJ - Instructed to look into Kubernetes which is a way to run work loads in their own environments, knows as containers.
 
 
 
