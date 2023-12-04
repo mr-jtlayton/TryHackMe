@@ -8,8 +8,8 @@ AE		30 Nov 2023		WTA, HTTPS
 AF      02 Dec 2023     THM, Day 2 Cyber Advent, Data Science + Cybersecurity, Python (Pandas and Matplotlib), Jupyter
 AG      02 Dec 2023     Core Windows Processes, Task Manager
 AH      03 Dec 2023     THM, Day 3 Cyber Advent, Brute-forcing with Hydra and Crunch
-
-
+AI      03 Dec 2023     ELK (Elastic Search, Logstash, Kibana), and Beats
+AJ      
 
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
@@ -88,9 +88,13 @@ AH - Ok this was awesome. I find brute-forcing to be very interesting and using 
 
 AH - Hydra time. Here is the command: hydra -l '' -P 3digits.txt -f -v 10.10.59.67 http-post-form "/login.php:pin=^PASS^:Access denied" -s 8000 . To break this dowm, -l '' tells hydra to login with no username because nothing was specified between the quotes. -P 3digits.txt tells hydra to use my crunch created password list. -f and -v tells hydra to stop when login is successfull and provide a verbose output should I need to troubleshoot. We include the IP address of the login portal, we specift that we are using HTTP post method to submit our password to the server, and the next part is a little tricky. "/login.php:pin=^PASS^:Access denied" is actually three sections separated by colons. When I view the access portal source code I can see that /login.php is the page where the password is submitted and pin=^PASS^ tells hydra to submit the passwords from my list at this point in the web transaction. We also include the text that would be displayed if the password failed, which is "Access denied". This works and I have entry.
 
-AH - SUMMARY. Very fun box. I used crunch to create a password list that doesn't waste time with any password that are not possibilities. This required a small amount of enumeration like going to the website and seeing what the pin pad wou
+AH - SUMMARY. Very fun box. I used crunch to create a password list that doesn't waste time with any password that are not possibilities. This required a small amount of enumeration like going to the website and seeing what the pin pad would. I used that password list that crunch made with Hydra and this Brute-forced the website in a very short ammount of time.
 
-AI - 
+AI - Finally some good stuff after the boring Windows-based rooms that were putting me to sleep. Excited to learn about ELK because I've heard it mentioned several times in comparison to Splunk. I learned the process of which the ELK components work together to accomplish the end goal. Beats is the data collection agent, Logstash does the data input/filter/process/output, Elastic search indexes the data, and finally Kibana is the analysis and Visualization tool to gain the insight into what the data means and allows us to search the data that has been indexed.
+
+AI - SUMMARY. I used Kibana to practice filtering my query to gain specific results. I found a way I think is easiest to filter. Say I want to find "John" and the only name I see is "Will". Well I can filter by Will and then edit the filter to say John. Easy day. I learned the Kibana Query Language. Honestly seemed very forgiving. Next was to create some visualizations. Here I was able to create visuals that would probably be appealing for presenting to others, but I think I'd rather have the data. Neat feature though.
+
+AJ - 
 
 
 
