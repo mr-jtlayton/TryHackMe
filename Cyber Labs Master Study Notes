@@ -9,7 +9,7 @@ AF      02 Dec 2023     THM, Day 2 Cyber Advent, Data Science + Cybersecurity, P
 AG      02 Dec 2023     Core Windows Processes, Task Manager
 AH      03 Dec 2023     THM, Day 3 Cyber Advent, Brute-forcing with Hydra and Crunch
 AI      03 Dec 2023     ELK (Elastic Search, Logstash, Kibana), and Beats
-AJ      
+AJ      04 Dec 2023     Palo Alto Firewalls Class
 
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
@@ -30,7 +30,7 @@ AA - Back on topic. After the initial key exchange that was performed, most of t
 
 AA - SUMMARY. I determined the following indicators of compromise: Large size/payload ICMP packets, SSH and key exchange over ICMP, and deliberate inclusion of a string "test local" in the ICMP payload.
 
-AB - New task and initial walkthrough. I see a multitude of different protocols, but the main protocol is DNS. I remember DNS as the phone book of the internet. I filter by dns because that is the topic. The queries start of small <200 bytes. I begin to notice amongst binary text the term 'datexfil com". Supposedly this is abnormal, but I wouldn't have known that.
+AB - New task and initial walkthrough. I see a multitude of different protocols, but the main protocol is DNS. I remember DNS as the phone book of the internet. I filter by dns because that is the topic. The queries start of small <200 bytes. I begin to notice amongst binary text the term 'datexfil com'. Supposedly this is abnormal, but I wouldn't have known that.
 
 AB - Video guide suggested to right click "Name" under the DNS "Queries" and add it as a column so I can quickly identify any abnormalities. Well that was easy. I sort by smallest because most of the names are obfuscated and unreadable. Once sorted I scroll to the top and wallah! DNS Cat and the data exfil sites were right there. I learned that DNS Cat is a solid IoC because DNS Cat is used by attackers to establish covert communication between compromised systems and C2 servers (Command and Control).
 
