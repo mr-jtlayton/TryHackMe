@@ -9,7 +9,8 @@ AF      02 Dec 2023     THM, Day 2 Cyber Advent, Data Science + Cybersecurity, P
 AG      02 Dec 2023     Core Windows Processes, Task Manager
 AH      03 Dec 2023     THM, Day 3 Cyber Advent, Brute-forcing with Hydra and Crunch
 AI      03 Dec 2023     ELK (Elastic Search, Logstash, Kibana), and Beats
-AJ      04 Dec 2023     Palo Alto Firewalls Class
+AJ      04 Dec 2023     Palo Alto Firewalls Class, Day 1, Lab 1
+AI      04 Dec 2023     THM, Day 3 Cyber Advent, CeWL Brute-forcing and wfuzz for fuzzing
 
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
@@ -96,8 +97,27 @@ AI - SUMMARY. I used Kibana to practice filtering my query to gain specific resu
 
 AJ - Revisiting OSI again. A network switch is just a way to complete the circuit. In one connection and out another. Example is telephone operators connecting phone lines through the physical application (way back in the day). Data link layer is switching, uses MAC addresses. Network layer uses IP addresses to connect numerous networks, does routing. Transport layer is mainly made up of Transmission Control Protocol and User Datagram Protocol, uses ports. Being a Next Gen Firewall means you can do Layer 7 analysis which is also known as a DPI or Deep Packet Inspection to see the actual data that is being passed over a network.
 
-AJ - Instructed to look into Kubernetes which is a way to run work loads in their own environments, knows as containers.
+AJ - Instructed to look into Kubernetes which is a way to run work loads in their own environments, knows as containers. New topic, discussed Zero Trust which is never trust; always verify. Inspect perimeter and internal traffic. Inspect north-south traffic to the internet as well as east-west traffic within the internal network, which is traffic between users and applications. I learned that firewalls are actuall hardware components, I always imagined it as a virtual component. That being said, a physical firewall can be partioned into several logical firewalls with its own set of policies.
 
+AJ - Statefull firewalls package packets into sessions to inspect. The sessions are specific to conversations like a web browsing session. This gives the firewall more context as to what the session is related to. New sessions per second is a metric of how many sessions a firewall can handle at one time. Just loaded the first lab which is deploying a firewall. Started by applying a baseline configuration to the firewall. Unrelated reminder to myself (because it showed up on the firewall webpage), FQDN stands for fully qualified domain name. includes:
+    Protocol: https://
+    Subdomain: WWW.
+    Domain Name: tryhackme
+    Top Level Domain: .com
+    Root Domain: tryhackme.com
+    To look up a DNS use nslookup https://www.springschapel.org
+
+AJ - MGT is the label for a management port on a firewall. Console is a port plug for using command line interface. This is called Remina in lab. I set the permitted IP address to manage the firewall is 192.168.0.0/16. This allows all IP addresses that start with 192.168 and subnet 255.255 to manage the firewall. Misconfiguration here can lose network connectivity to the firewall and would require special intervention.
+
+AJ - SUMMARY. Great lesson. Reviewed network basics and gained a new perspective on the OSI model. Discussed the physical layer in more detail. Discussed what make a NGFW a NGFW and how Palo Alto (PA) is special here. Practiced setting up and updating the PA firewall.
+
+AK - The goal is to gain access to a portal (http://10.10.114.184/login.php), using CeWL. This is the initial command we will be using: cewl -d 2 -m 5 -w passwords.txt http://10.10.114.184 --with-numbers . To break this down, -d is the depth which defaults at 2. The video guide explains this as the number of clicks that will need to be made on the page, hoping to clarify this more. Next is the -m flag which sets the mimimum word length. -w writes the output to the specified file and of course we include the target. --with-numbers tells cewl that its okay to include numbers. This generated 253 passwords which I determined using the wc -l passwords.txt command.
+
+AK - I learned that CeWL creates lists based on information found on the website specified. Probably not a good idea to use credentials that are related to the web content. Anyway, I did the same thing to create a 37 username text file. I inspected the file with nano and realized that alot of the items were not probable usernames so I went ahead and edited it down to 21 names. With both my usernames and passwords lists created it was time to brute-force. However this was different than I have ever done before because now we are using wfuzz which is a fuzzing tool. At this point I should test the website using burp to see if the login page I was given is the definite location where credentials are passed via POST requests. It is, good to go.
+
+AK - For the fuzzing uising wfuzz this was the command: wfuzz -c -z file,usernames.txt -z file,passwords.txt --hs "Please enter the correct credentials" -u http://10.10.114.184/login.php -d "username=FUZZ&password=FUZ2Z" . Break this down; -c tells wfuzz to output with colors, -z file,usernames.txt and passwords.txt sets it to scan mode meaning connection errors will be ignored and uses our generated lists. --hs "Please enter the correct credentials" is the error message when login fails so i use this to hide responses with this. -u specifies url and -d provides the POST data format where FUZZ will be replaced by the items in our wordlists. FUZ2Z is not a typo, it specifies the order.
+
+AK -SUMMARY. I used CeWL almost as a OSINT harvesting tool for generating wordlist. Then used wfuzz to insert wordlist items into the POST command and brute-force more or less a web portal. I learned how important editing the wordlists are. I thought I did ok, but it took 5566 attempts compared to the video guide who sent 508 requests. I think both would stand-out to blue-team but mine was far worse. This stresses the importance of carefully selecting usernames and passwords. I learned that this was possible because there were restrictions imposed on the login portal like number of attempts etc. I originally thought it was related to the portal being a .php but that was not the case. I learned alternatives to wfuzz are ffuf which might have a better syntax in my opinion. There is also Hydra which we used yesterday. Hydra looks as difficult as wfuzz. Burpsuite is a final option provided by the video guide. Problem is burp community edition is too slow for intruder, there is a free extension called turbo intruder which solves this. Made by the same people who make burp LOL.
 
 
 
