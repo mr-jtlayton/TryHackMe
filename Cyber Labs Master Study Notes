@@ -1,19 +1,20 @@
 INDEX - CTRL + F "XX - SUMMARY" to jump to summarized paragraph on speciified topic.
 
-AA		30 Nov 2023		Wireshark Traffic Analysis (WTA), ICMP
-AB		30 Nov 2023		WTA, DNS
-AC		30 Nov 2023		WTA, Cleartext Protocol Analysis, FTP
-AD		30 Nov 2023		WTA, HTTP
-AE		30 Nov 2023		WTA, HTTPS
-AF      02 Dec 2023     THM, Day 2 Cyber Advent, Data Science + Cybersecurity, Python (Pandas and Matplotlib), Jupyter
-AG      02 Dec 2023     Core Windows Processes, Task Manager
-AH      03 Dec 2023     THM, Day 3 Cyber Advent, Brute-forcing with Hydra and Crunch
-AI      03 Dec 2023     ELK (Elastic Search, Logstash, Kibana), and Beats
-AJ      04 Dec 2023     Palo Alto Firewalls Class, Day 1, Lab 1
-AK      04 Dec 2023     THM, Day 4 Cyber Advent, CeWL Brute-forcing and wfuzz for fuzzing
-AL      05 Dec 2023     THM, Intro to Splunk and Incident Handling, Cyber Kill Chain Invesetigation
-AM      06 Dec 2023     Palo ALto Day 3 & THM Investigating w/ Splunk Labs x2
+AA        30 Nov 2023    Wireshark Traffic Analysis (WTA), ICMP
+AB        30 Nov 2023    WTA, DNS
+AC        30 Nov 2023    WTA, Cleartext Protocol Analysis, FTP
+AD        30 Nov 2023    WTA, HTTP
+AE        30 Nov 2023    WTA, HTTPS
+AF        02 Dec 2023    THM, Day 2 Cyber Advent, Data Science + Cybersecurity, Python (Pandas and Matplotlib), Jupyter
+AG        02 Dec 2023    Core Windows Processes, Task Manager
+AH        03 Dec 2023    THM, Day 3 Cyber Advent, Brute-forcing with Hydra and Crunch
+AI        03 Dec 2023    ELK (Elastic Search, Logstash, Kibana), and Beats
+AJ        04 Dec 2023    Palo Alto Firewalls Class, Day 1, Lab 1
+AK        04 Dec 2023    THM, Day 4 Cyber Advent, CeWL Brute-forcing and wfuzz for fuzzing
+AL        05 Dec 2023    THM, Intro to Splunk and Incident Handling, Cyber Kill Chain Invesetigation
+AM        06 Dec 2023    Palo ALto Day 3 & THM Investigating w/ Splunk Labs x2
 AN        07 Dec 2023    Cloning Git repository to PC/Laptop via SSH
+AO        07 Dec 2023    THM Windows Forensics
 
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
@@ -152,7 +153,17 @@ git commit -m "a second trial, nothing to see here"
 git push origin main
 Now I am doing the same process on my laptop.
 
+AN - SUMMARY. This was all about learning how to use GitHub and Git on the CLI of Windows via powershell. The purpose is to have a quick way to upload a document via command line to a repository on the internet using very secure means (SSH) which use asymmetric encryption. First I generated my own public and private keys specifically for this purpose with a key gen command. Then I took my public key and added it to my GitHub account which allowed me to authenticate myself later when interacting with Git. This will take alot of practice to remember the syntax.
 
+AO - In this room I learned about Windows registries and the five root keys, all begin with "HKEY_": 1. CURRENT_USER (for the current users settings. Example: The wallpaper), 2. USERS (this affects all users' settings on the machine. Example: no example this is just a hive for each user registry), 3. LOCAL_MACHINE (effects the entire computer, regardless of the user. Example: The Windows automatic update policy), 4. CLASSES_ROOT (this merges the LOCAL_MACHINE and CURRENT_USER. Example: Specifying which programs should open text files.), 5. CURRENT_CONFIG (provides a hardware of the current system. Example: Display settings for the current hardware). I went to the registry editor using the command regedit.exe. Then I went to investigate the "binary" data within one in one item. The data was displayed in hexidecimal format which made me wonder why?
+
+AO - I refreshed on the purpose of using hexidecimal text. In short, it makes data more compact, it's easier for a machine to read, allows for the handling of more data types, and it is widely used in programming. Next I learned that each registry key has a short hand using the first letter of each work more or less. Next, it's important to know where to find registry hives if they are to be extracted from a disk image which may be the all there is to work with. They are stored in: C:\Windows\System32\Config and they are
+DEFAULT            HKU\DEFAULT
+SAM            HKLM\SAM
+SECURITY            HKLM\Security
+SOFTWARE            HKLM\Software
+SYSTEM            HKLM\System
+Did I mention I hate learning Windows? Why is it so damn complicated, I don't want to know any of this. GPT can tell me how to interact with Windows as its needed or until I learn from being forced to use it. Linux is more simpler and I love it. I don't think this forensics stuff is for me. The rest of the room I learned about the various forensics tools.
 
 
 
