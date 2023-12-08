@@ -13,6 +13,7 @@ AJ      04 Dec 2023     Palo Alto Firewalls Class, Day 1, Lab 1
 AK      04 Dec 2023     THM, Day 4 Cyber Advent, CeWL Brute-forcing and wfuzz for fuzzing
 AL      05 Dec 2023     THM, Intro to Splunk and Incident Handling, Cyber Kill Chain Invesetigation
 AM      06 Dec 2023     Palo ALto Day 3 & THM Investigating w/ Splunk Labs x2
+AN        07 Dec 2023    Cloning Git repository to PC/Laptop via SSH
 
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
@@ -141,8 +142,15 @@ AM - Limited to only Event ID 4688 which is used to identify the start of a new 
 
 AM - SUMMARY. Today was tough. What I learned: Learned the reserved private IP addresses. I tried to investigate on my own, but ultimately today came down to knowning about Event IDs which have more meaning than I suspected. FIltering and researching these was all I needed in the first room. The second room was nearly opposite because we were limited to one ID. I got more practice with using the statistics and visualization tools within Splunk. The second room required more knowledge about LOLBINs and now I have a good resource for that. I had to do a lot of filtering by ProcessName and I wish I knew a better way. Good challenge.
 
-
-
+AN - I made a new repository for the Springs Chapel project on GitHub.com. Now I want to clone the repository to both my PC and laptop so I can edit it on the road and at home and the pastor will have the ability to edit it without version control issues. I have the Springs Chapel (SC) folder on my desktop so I modifed my directory location in powershell (PS) to be there. Now to use git clone and the command generated on the web-based repository. My computer warns me that authenticity can't be established because this is the first time connecting to it. I am given the SHA256 hash of a public key which I learned that the key is generated using the ED25519 asymmetric cryptography a.k.a Edwards-curve Digital Signature Algorithm. 25519 refers to the prime number 2^255 - 19 which defines the specific elliptic curve. I'll check the hash against the website's fingerprint registry. Using powershell is a more difficult method of comparing hashes then I expected, so I am going to do it in Python instead. I create two variables for each key. Then I am sure to remove spaces or tabs a.k.a whitespace characters. They matched. I stored the GitHub (GH) fingerprint but my public key is not associated with my GH account so now I generated a new key and associated the email associated with my GH account. ssh-keygen -t ed25519 -C tannerlayton01@gmail.com. It created a really interesting looking randomart image for my key's fingerprint. I then went into my account settings and added the SSH key. Then back to PS and I used ssh -T git@github.com to check that my update worked and it did! I got an error message just because the repo was empty on the website but now I will create a document via PS. echo "# SpringsChapel" >> README.md
+git add README.md
+git commit -m "Initial commit"
+git push origin main
+Now I will open the current folder in VS Code (VSC) to edit the readme document to test the pushing of the document to the main repository. Now to push the document back to the online repository I use the following commands: 
+git add README.md
+git commit -m "a second trial, nothing to see here"
+git push origin main
+Now I am doing the same process on my laptop.
 
 
 
