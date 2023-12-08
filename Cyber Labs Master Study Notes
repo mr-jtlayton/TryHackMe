@@ -14,8 +14,8 @@ AK        04 Dec 2023    THM, Day 4 Cyber Advent, CeWL Brute-forcing and wfuzz f
 AL        05 Dec 2023    THM, Intro to Splunk and Incident Handling, Cyber Kill Chain Invesetigation
 AM        06 Dec 2023    Palo ALto Day 3 & THM Investigating w/ Splunk Labs x2
 AN        07 Dec 2023    Cloning Git repository to PC/Laptop via SSH
-AO        07 Dec 2023    THM Windows Forensics
-
+AO        08 Dec 2023    THM, Day 7 Cyber Advent, Manually parsing logs (Cut, Sort, Uniq, Grep, Base 64
+AP        0 Dec 2023    
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
 
@@ -155,17 +155,31 @@ Now I am doing the same process on my laptop.
 
 AN - SUMMARY. This was all about learning how to use GitHub and Git on the CLI of Windows via powershell. The purpose is to have a quick way to upload a document via command line to a repository on the internet using very secure means (SSH) which use asymmetric encryption. First I generated my own public and private keys specifically for this purpose with a key gen command. Then I took my public key and added it to my GitHub account which allowed me to authenticate myself later when interacting with Git. This will take alot of practice to remember the syntax.
 
-AO - In this room I learned about Windows registries and the five root keys, all begin with "HKEY_": 1. CURRENT_USER (for the current users settings. Example: The wallpaper), 2. USERS (this affects all users' settings on the machine. Example: no example this is just a hive for each user registry), 3. LOCAL_MACHINE (effects the entire computer, regardless of the user. Example: The Windows automatic update policy), 4. CLASSES_ROOT (this merges the LOCAL_MACHINE and CURRENT_USER. Example: Specifying which programs should open text files.), 5. CURRENT_CONFIG (provides a hardware of the current system. Example: Display settings for the current hardware). I went to the registry editor using the command regedit.exe. Then I went to investigate the "binary" data within one in one item. The data was displayed in hexidecimal format which made me wonder why?
+AO - I have a log file saved in working directory. Using cat provides me with a ton of data that is hard to read although I can tell the format of the log which goes something like; date/time, source IP, domain and port, HTTP method, and so on. I can cut through the logs to display one column at a time using; cut -d ' ' -f1 logfile.log. the -d flag is the delimeter which in this case I set to space with ' '. Then I used the -f flag to set the position which means the first time my set delimeter is found in a line will be the end point for each line extraction. So I would only see the date/time for each row. -f2 would give me just the source IPs. I can pick out multiple columns using -f1,3,6 for example.
 
-AO - I refreshed on the purpose of using hexidecimal text. In short, it makes data more compact, it's easier for a machine to read, allows for the handling of more data types, and it is widely used in programming. Next I learned that each registry key has a short hand using the first letter of each work more or less. Next, it's important to know where to find registry hives if they are to be extracted from a disk image which may be the all there is to work with. They are stored in: C:\Windows\System32\Config and they are
-DEFAULT            HKU\DEFAULT
-SAM            HKLM\SAM
-SECURITY            HKLM\Security
-SOFTWARE            HKLM\Software
-SYSTEM            HKLM\System
-Did I mention I hate learning Windows? Why is it so damn complicated, I don't want to know any of this. GPT can tell me how to interact with Windows as its needed or until I learn from being forced to use it. Linux is more simpler and I love it. I don't think this forensics stuff is for me. The rest of the room I learned about the various forensics tools.
+AO - For my next cut I was trying to pull ther user-agent which begins and ends in quotations. If I set the delimeter to '"' and -f to 1 then I only see everything before the first " which is not what I want to I set it to 2 to see the information between quotes which is the user-agent. Next we move into pipes. Reminder the pipe takes the output of the first command and uses it as the input to the second command. I used grep to find a phrase in the logfile and then piped it to head -n 5 to only show the first 5 occurences. I can also pipe one cut into another if I need to split it even further.
+Next we incorporate the sort and uniq commands. I learned that data in text file will need to be sorted because the sort command is only capable of comparing adjacent lines. Piping is pretty cool, I learned there is not really a limit to how  many times you can do it in a single command. Example: cut -d ' ' -f3 access.log | cut -d ':' -f1 | head -n 5 | sort | uniq. I was only adding head -n 5 in there because I wanted to reduce the amount of data returned.
+Lets disect the following command:
 
+cut -d ' ' -f3 access.log | cut -d ':' -f1 | sort | uniq -c | sort -n | tail -n 10
 
+1. we take the file named access.log and we cut out a portion of the text belonging to each line on the third occurence of the delimeter ' '
+2. that feeds the next delimeter of ':' which is set to the first occurence and cuts the port numbers off the first output
+3. we take those results and sort them alphabetically so that duplicate items are grouped together which is a necesseity for the next step
+4. Now we eliminate duplicates but the -c flag keeps track of the total number of occurences
+5. we sort these numerically instead of alphabetically so we can see least to most
+6. We reduce the results to the top 10 highest occurences. Pretty sweet right?
 
+AO - Something that helped me when determining the -f flag when cutting out spaces is to just count the words (that have a space before and after) and the fifth word would be -f 5. I was given the most challenging task in the challenge so far, it was What status code is generated by the HTTP requests to the least accessed domain? This is how I did it. As a reminder here is an example log entry:
 
+[2023/10/25:15:42:02] 10.10.120.75 sway.office.com:443 GET / 200 20947 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
 
+grep "GET" access.log | cut -d' ' -f3,6 | sort | uniq -c | sort -n | grep "80" | head -n 1
+
+AO - SUMMARY. I have a better understanding of piping and how to use it and it sure can be a powerful tool. These are the commands I learned how to use and their associated flags:
+cut -d delimeter, -f count
+sort -n number, no flag is default alphabetically 
+uniq -c will count unique values on top of eliminating redundencies. Great stuff.
+grep. This I already knew but now I have a better understanding how to use in piped commands.
+
+AP - 
