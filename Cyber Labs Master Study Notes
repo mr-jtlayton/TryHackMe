@@ -17,7 +17,8 @@ AN        07 Dec 2023    Cloning Git repository to PC/Laptop via SSH
 AO        08 Dec 2023    THM, Day 7 Cyber Advent, Manually parsing logs (Cut, Sort, Uniq, Grep, Base 64
 AP        14 Dec 2023    THM, Cyber Advent, Malware analysis, Firewall management, and Honeypot setup
 AQ        15 Dec 2023    THM, Linux Forensics
-AR        20 Dec 2023    THM, Phishing analysis tools, email analysis
+AR        20 Dec 2023    THM, Phishing analysis tools, email analysis, Wireshark SMTP analysis. FInished SOC Level 1!
+AS        20 Dec 2023    THM, Cyber Advent, Machine Learning to defeat captcha and brute forcing
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
 
@@ -238,3 +239,39 @@ AR - Using a video guide for learning. Using thunderbird to view the email, open
 AR - Next I used anyrun which seems like a cool service that has most of its capability locked behind a paywall. However using the text report I was able to get the information I needed, but I'm still not sure why I would use this tool over Virus Total. I looked into the CVE associated with the malicious email which turned out to be pretty serious (a 7.8 CVSS score).
 
 AR - Next I analyzed a PCAP file full of SMTP traffic. I filtered by response code and I did some open source research to determine the meaning of 220 and more importantly status codes like 550 which is used when an email is rejected due to suspicious activity that could be related to spamming. In this task I was looking for 553 which shouldn't be indicative of malicious activity but in this case it was. I was curious so I looked into status codes some more and it turns out that 500 series status codes for SMTP are reserved for hard/permanent failures. I rehashed that the SMTP port is 25. My next task was to look into file attachments that were sent via SMTP. I used the status code 354 since this has to do with sending data. Honestly kind of a shot in the dark but it worked. Once I filtered down to this I just right clicked the individual packets and followed the conversation streams. Once the TCP stream window opened I search "attachment" and I got the file names I was tasked to find.
+
+AR - SUMMARY. I used new tools such as mxtoolbox to quickly analyze the header of a malicious email and gain insight to values worth investigating via other threat intelligence websites. I also used wireshark and practiced using filters to quickly find the data that I cared the most about. I learned about SMTP status codes that are noteworthy. I finished SOC level 1!
+
+AS - Used the video guide. Learned about using docker to train a AI Convultional Nueral Network. All of the training was already accomplished as this would take more time and resources than what I have available. I learned about loss, perplexity, and probability when it comes training data sets. Loss we want to be as close to 0 as possible because that means the AI is getting the correct answer more often. Perplexity is a measurement of how sure the AI is when making its guess and in this scenario we want the value to be as close to one as possible. With the satisfactory training set ready to go there are a few more things to do:
+{
+1. Set up a web server with an API that is hosting the CNN (AI) and can receive the captcha images, solve the problems, and return the answers.
+2. Programatically navigate to the login page and retrieve the captcha image
+3. Retrieve the captcha image to our CNN API web server
+4. CNN solves the CAPTCHA and returns the solution to the target login page
+5. Evaluate probabilit/perplexity and discard the captcha if the CNN is unsure and return to step 2 as necessary
+6. When the AI comes across CAPTCHA that with low perplexity then attempt to solve it
+7. Repeat this process untill login is successful
+}
+AT - Moving on to the traffic analysis lab. Using SILK and the associated commands in the CLI. This seems like a more manual way to analyze traffic compared to Splunk/ELK and much less efficient. 
+
+AT - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
