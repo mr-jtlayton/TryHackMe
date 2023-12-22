@@ -19,6 +19,7 @@ AP        14 Dec 2023    THM, Cyber Advent, Malware analysis, Firewall managemen
 AQ        15 Dec 2023    THM, Linux Forensics
 AR        20 Dec 2023    THM, Phishing analysis tools, email analysis, Wireshark SMTP analysis. FInished SOC Level 1!
 AS        20 Dec 2023    THM, Cyber Advent, Machine Learning to defeat captcha and brute forcing
+AT        22 Dec 2023    THM, Cyber Advent, Server-Side Request Forgery, Splunk 2 Boss of the SOC
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
 
@@ -252,9 +253,10 @@ AS - Used the video guide. Learned about using docker to train a AI Convultional
 6. When the AI comes across CAPTCHA that with low perplexity then attempt to solve it
 7. Repeat this process untill login is successful
 }
-AT - Moving on to the traffic analysis lab. Using SILK and the associated commands in the CLI. This seems like a more manual way to analyze traffic compared to Splunk/ELK and much less efficient. 
 
-AT - 
+AT - SUMMARY. The cyber advent challenge today allowed us to go into the API details of a web server which gave away way too much information. Ultimately I was able to use the address bar of my browser to access server files that gave me access to login and defeat the C2 server from the inside. Next I moved into the Splunk exercise using the Splunk Enterprise tool. The suspect user's name was Amber which I included in my initial search to determine a likely IP address associated with the user's device. My next task was to look into her browsing history which was conveinently all HTTP so that is what I used as my source type. I used my search input and piped it into 'dedup' and 'table' to create a table that showed unique url's that Amber had visited. The industry she works in is beer so I looked for beer competitors of the client I was working for. We found berkbeer.com here which I was now abke to include into my search. We saw she browsed their page looking for contact details of the CEO which implied she was going to try and contact him while using the company network, what a dummy! We switched source type to view smtp traffic so we could find the emails exchanged. I needed to find Amber's email which was easy and then I found her communication with the CEO and one of his employees. The last email exchanged was encoded in Base64 for some reason so I viewed the main content, copied and pasted into cyberchef, and wallah! I see that she passed on her personal email info which is presumably where they picked up their conversation and she did illegal things. Shame!
+
+
 
 
 
