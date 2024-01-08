@@ -20,7 +20,10 @@ AQ        15 Dec 2023    THM, Linux Forensics
 AR        20 Dec 2023    THM, Phishing analysis tools, email analysis, Wireshark SMTP analysis. FInished SOC Level 1!
 AS        20 Dec 2023    THM, Cyber Advent, Machine Learning to defeat captcha and brute forcing
 AT        22 Dec 2023    THM, Cyber Advent, Server-Side Request Forgery, Splunk 2 Boss of the SOC
-AU        23 Dec 2023    THM, Attacktive Directory, NMAP, enum4linux v.s. SMB/NetBIOS,  
+AU        23 Dec 2023    THM, Attacktive Directory, NMAP, enum4linux v.s. SMB/NetBIOS
+***************************************************************************************************************
+Continued TryHackMe training over the Holiday period, but focused on spending time with family. 8 January I begin an instructor-led training course on AWS basics and security, and I plan to continue using TryHackMe at a slower pace while also completing Splunk and Python training courses.
+***************************************************************************************************************
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
 
