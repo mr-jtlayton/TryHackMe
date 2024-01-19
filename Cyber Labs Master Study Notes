@@ -25,6 +25,7 @@ AU        23 Dec 2023    THM, Attacktive Directory, NMAP, enum4linux v.s. SMB/Ne
 Continued TryHackMe training over the Holiday period, but focused on spending time with family. 8 January I begin an instructor-led training course on AWS basics and security, and I plan to continue using TryHackMe at a slower pace while also completing Splunk and Python training courses.
 ***************************************************************************************************************
 AY        11 Jan 2024    AWS, Setting up an EC2 instance and connecting to it via SSH
+AZ        18 Jan 2024    THM, Manual code review, finding SQL injections in HTML
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
 
@@ -279,9 +280,9 @@ AX - Today was about investigating an infected Windows machine using native Wind
 
 AY - Sort of self explanatory, but after setting up a free-tier AWS account I was able to create a new instance and connect to it through powershell. To do so I needed to create then store the SSH RSA key onto my machine so that it was available to connect. I launched a web server using httpd and then connected to it from my local machine. I needed to modify the firewall rules of the AWS instance to allow HTTP traffic. In the AWS terminal I created a message to display on my web server which displayed correctly when I loaded the web page. I terminated the server to avoid unwanted charges.
 
+AZ - My job was to look for SQL injection opportunities (vulnerabilities) within a directory containing multiple .php files which are the files where the website code is stored. Instead of manually opening each file and reading the long string of text within, I used the grep command. Some of the options I used with grep include -r for recursive searching. This is necessary to allow the computer to dig through all the sub directories, folders, and files. I used -n to print out the line associated with the location of the search results down to the specific line number. This will help me cat the file and locate the error quickly so that changes can be made. I used -E for searching multiple terms. For example I knew the function 'include()' was assocated with my vulnerability, but I wanted to know when that function was used in conjuction with GET or POST HTTP methods. So I used the search: grep -rE 'include\(|(GET|POST)' which returned all three terms here highlighted in red, but this allowed me to spot when include was used with GET on the same line, which in turn pointed me to the trouble file. 
 
-
-
+AZ - Next I used an automated tool called PSALM which was able to parse my files and find tainted HTML or so the application referred to bad code. Still manual review of the returns from the automated tool needed to be manually reviewed because false positives are unavoidable at this point and will require human interaction.
 
 
 
