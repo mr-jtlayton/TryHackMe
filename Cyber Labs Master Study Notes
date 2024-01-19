@@ -25,7 +25,7 @@ AU        23 Dec 2023    THM, Attacktive Directory, NMAP, enum4linux v.s. SMB/Ne
 Continued TryHackMe training over the Holiday period, but focused on spending time with family. 8 January I begin an instructor-led training course on AWS basics and security, and I plan to continue using TryHackMe at a slower pace while also completing Splunk and Python training courses.
 ***************************************************************************************************************
 AY        11 Jan 2024    AWS, Setting up an EC2 instance and connecting to it via SSH
-AZ        18 Jan 2024    THM, Manual code review, finding SQL injections in HTML
+AZ        18 Jan 2024    THM, Manual code review and Dynamic App Security Testing (DAST), finding webpage vulnerabilities
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
 
@@ -284,9 +284,13 @@ AZ - My job was to look for SQL injection opportunities (vulnerabilities) within
 
 AZ - Next I used an automated tool called PSALM which was able to parse my files and find tainted HTML or so the application referred to bad code. Still manual review of the returns from the automated tool needed to be manually reviewed because false positives are unavoidable at this point and will require human interaction.
 
+AZ - Next I used the OWASP Zap tool to automate some vulnerability scans. I learned how certain web pages won't necessarily show up in a scanning tool because the specific web page urls are embedded in the javascript which is only ran through the browser. So the ZAP tool has a tool called AJAX Spider which essentially takes control of the web browser (with or without the GUI) and performs the scan (spider scan) through there to now find java enabled web pages. I also created a modifed scan where I disabled searching for SQL injections to help speed up the scan. It wasn't that time intensive in the first place. The alerts page notifies me of the different vulnerabilities. In this case there was some opportunities for cross site scripting and path traversal which were of th ebiggest concern. The path traversal attack would allow an attacker to access the /etc/passwd file which provides the attacker with a nice list of usernames, group ids, and more which is undoubtedly useful information for continued attacks.
 
+AZ - The next part was sort of complicated. I started a recording and completed a login to the target web page with a random account. I stopped the recording and saved it. I ran it and found that certain web pages and request resulted in a logout. So the guide had me set a login and logout point which enabled the scanner to re-login as necessary so it could complete the scan instead of just logging out. I know, confusing. But this allowed me to detect a Remote OS Command Injection vulnerability. This was an alternative method to gaining access to the /etc/passwd, albeit a much more complicated process than the directory transversal.
 
+AZ - I used the OWASP ZAP in the development pipeline by running zap2docker. I don't fully understand this portion, I think it was a little over my head. I used the sites Gitea and Jenkins. Gitea contained the script whcih I had to go in and edit and then I executed the script from my command line with this command: docker run -t owasp/zap2docker-stable zap-baseline.py -t https://www.example.com. Then I went to jenkins and found where the code for the webpage is compiled. I could also see my OWASP ZAP scan which after about 4 minutes came back failed. There were several warnings, all of which are serious. This is important in the development process because you can catch errors before attackers can exploit them on the live web page. I repeated the process for the API which was again going to the jenkins file on the Gitea hosted repository and modifying it, then rerunning the ZAP scan but this time for an API. Back on Jenkins I found the scan ongoing and then located the zap report file which detailed a high alert risk for Remote OS Command Injection.
 
+AZ SUMMARY - Ultimately this goes to show how many vulnerabilities may be present beyond the simple directory transversal. It really pays to have your webpage scanned by a professional and it pays to implement scanning during the development process prior to deploying a web-page.
 
 
 
