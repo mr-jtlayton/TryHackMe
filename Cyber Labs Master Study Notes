@@ -21,12 +21,11 @@ AR        20 Dec 2023    THM, Phishing analysis tools, email analysis, Wireshark
 AS        20 Dec 2023    THM, Cyber Advent, Machine Learning to defeat captcha and brute forcing
 AT        22 Dec 2023    THM, Cyber Advent, Server-Side Request Forgery, Splunk 2 Boss of the SOC
 AU        23 Dec 2023    THM, Attacktive Directory, NMAP, enum4linux v.s. SMB/NetBIOS
-***************************************************************************************************************
-Continued TryHackMe training over the Holiday period. This page wasn't updated but there was sustainted studying occuring daily. I began an instructor-led training course on AWS CCP and Security Specialty. Another class I was planning to take that was to provide instruction and exam vouchers for Sec+ cancelled so now I need to shift my focus to self-studying and taking the Sec + in February. I would like to earn the AWS certs as well.
-***************************************************************************************************************
 AY        11 Jan 2024    AWS, Setting up an EC2 instance and connecting to it via SSH
 AZ        18 Jan 2024    THM, Manual code review and Dynamic App Security Testing (DAST), finding webpage vulnerabilities
-
+******************************************************************************************************************************
+BA        XX Feb 2024    SOC Automation Project
+******************************************************************************************************************************
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
 
 AA - A seperate point of interest was pointed out by the video guide. The intial pings were being sent out on the second every second. It was hard for me to distinguish a pattern after awhile, but very obvious at first. Further research shows that this regular interval between pings is an abnormal behavior, either malicious or begnign, but worth noting eitherway.
@@ -292,6 +291,11 @@ AZ - I used the OWASP ZAP in the development pipeline by running zap2docker. I d
 
 AZ SUMMARY - Ultimately this goes to show how many vulnerabilities may be present beyond the simple directory transversal. It really pays to have your webpage scanned by a professional and it pays to implement scanning during the development process prior to deploying a web-page.
 
+*******************************************************************************************************************************
+
+BA - Overview of the SOC automation project. Created a Windows 10 based virtual machine instance on virtual box. On the Windows 10 server we installed a Wazuh agent and a Sysmon64 application which are to send Events to a cloud hosted Wazuh manager. That manage will then send alerts based un prebuilt triggers to another cloud hosted server called Shuffle which will maintain a current encyclopedia of indicators of compromise and analyze the events coming across. Then Shuffle will send events to the theHive which will perform Case Management. Ultimately, I will receive emails about positive alerts and then provide responsive action which will make its way back to the Windows 10 Server.
+
+BA - My original thought is to use AWS free tier to host 2 EC2 instances for the Wazuh manager and theHive. My goal is to do this without paying someone else, so if that means that I will have to spin up another virtual machine or two on my host machine, then so be it. For AWS I am going with the free tier options. I am using Amazon Linux as the OS image, 64-bit architecture, t2.micro (because it is free-tier eligible), a generated key-pair using ED25519 cryptography (over RSA for speed and security), using a firewall that only allows SSH traffic from my host machine's public IP address, 30GB of storage (That is the max for free Tier, but I am worried this will not be enough). I have the EC2 instance up and running and I am not connected via SSH. Because I am using Amazon Linux, I was thrown off having to use yum instead of apt-get. Suprisingly there was nothing to update/upgrade, but I am weary of this. Sadly I couldn't install the Wazuh agent on the Amazon Linux OS I was using and I was given specific info about the recommended OSs. I tried to tell the install command to ignore this, but the shell returned that I was missing the curl dependency. I think I could probably make this work if I really wanted to but ultimately not worth it using the Amazon Linux OS image.
 
 
 
