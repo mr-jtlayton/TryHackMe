@@ -28,7 +28,12 @@ BA        XX Feb 2024    SOC Automation Project
 ******************************************************************************************************************************
 CA        12 Feb 2024    Splunk, Search Processing Language Basics
 CB        14 Feb 2024    Regex Search Practice
+** UPDATE **
 ******************************************************************************************************************************
+DA        17 Feb 2024    Arch Linux Install Small Project
+******************************************************************************************************************************
+
+------------------------------------------------------------------------------------------------------------------------------
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
 
@@ -342,3 +347,5 @@ CG - Defeat, for now - At this point I had overused the room and extended my tim
 
 
 
+*******************************************************************************************************************************************************
+DA - Back story - I was working on a big project which required a Wazuh server to be used. The recommended Linux Distros for Wazuh are Ubuntu, CentOS, and Amazon Linux 2 (Which I also might install to be more familiar with for AWS purposes). I don't personally like running Ubuntu in a VM, probably because of something I'm doing. CentOS is reaching end of life in a few more months which is a solid non-option for me, and I didn't realize Amazon Linux 2 was available for download at the time that I came up with this idea for a mini project. So this project is going to be me installing Arch Linux and going through their very in-depth setup guide. I find the install guide interesting because it didn't stop at successfully booting the machine. It's going to go through a lot of post-boot processes for getting the machine in a solid state. I figured there will be something there to learn that can be applied to using any OS on a VM. I am writing this at midnight so I am going to put a pin in this project for now until I find time soon.
