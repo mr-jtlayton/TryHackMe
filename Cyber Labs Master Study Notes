@@ -34,7 +34,7 @@ CB        14 Feb 2024    Regex Search Practice
 ******************************************************************************************************************************
 DA        17 Feb 2024    Arch Linux Install Small Project
 ******************************************************************************************************************************
-
+EA        22 Feb 2024    Establishing an expiremental web-page, hosted on AWS with a minimal spending goal, Background/Process 
 ------------------------------------------------------------------------------------------------------------------------------
 
 AA - Loaded PCAP file, performed a quick walkthrough of the 961 Packets loaded. I learned today that ICMP packets are typically smaller in size, i.e, 64 bytes, 126 for the initial pings, but I noticed that a small number of ICMP packets were 1070 bytes long and a few spread between ~300 - 1000. 
@@ -364,6 +364,13 @@ DB - The Download, Comparing Hashes with Python Scripts Baby! - There was a down
 
 DC - - Slowly realizing that this installation guide is more geared towards using this distro on the host machine and not a virtual machine, so many things are not applicable. I am going to keep going through the guide and also following an awesome youtube video I found. I learned how to check the date and time synch for accuracy. For some reason it displays local time as UTC and even says UTC at the end, but whatever the time is right. At this point I was starting to think that this was the entire archlinux and I was underwhelmed, but then i was overwhelmed when I realize this is just for setting it up. This is pretty cool, the setup process is all done via CLI although the archinstall command does bring up a sort of menu in the terminal that is navigatable. It keeps getting more intersting, there is like 15 different desktop environments. I am going with Gnome like the video guide chose.
 
+
+************************************************************************************************************************************************************
+EA - Background - I intend to establish my own LLC for a side-business idea that I thought of recently. I only intend to register my LLC once I have moved and gotten settled in. In the meantime, I am working with a free-tier membership of AWS that I intend to use as an experimental webpage for this future LLC. My goal is to have the webpage up and running, ready to support my customer base when the time comes and it is super important to me that this be as low cost as possible. This side-business of mine is not intended to make me lots of money and therefore I don't intend to spend lots of money either. I hope to demonstrate my ability to manage and configure cloud sevices with security and secure code development processes in mind. I want to conduct vulnerability assessments against the webpage and update the webpage to protect it from vulnerabilities. I don't intend to ever process PII or PCI DSS regulated data on the webpage.
+
+EA - The Process - I have identified the following path and stepping stones from where I currently stand. 1. Purchase and configure my website domain name through Amazon Route 53 for DNS management. 2. Use Adobe XD free-options to build a prototype website and then convert the website into static HTML, CSS, and JavaScript files. (probably swap steps 1 and 2 because no need to register a domain if it is not needed to build the prototype first, then when the website is ready I can deploy to start the CI/CD proces) 3. Create an S3 bucket for hosting a static website. 4. Request SSL/TLS certificate through the AWS Certificate Manager and complete the DNS validation process through Route 53. 5. Implement a contact form that forwards webpage user requests to an email inbox using a serverless approach (AWS Lambda and Simple Email Service and consider using AWS API gateway to trigger the Lambda function from the website) and implement CAPTCHA (maybe?) to prevent spam and ensure client/server-side validation is occuring. 6. Begin vulnerability teseting using OWASP ZAP. Continue updating and preparing for launch. Revisit CI/CD implementation throught AWS CodePipeline and AWS CodeBuild. Additional configuration includes setting up AWS CloudWatch for monitor websites health, Google Analystics to learn about my visitor traffic, and implement Search Engine Optimization practices to improve online visability.
+
+EB - Adobe XD - I am straight up nervous about wasting a lot of time here and not getting anywhere.
 
 
 
