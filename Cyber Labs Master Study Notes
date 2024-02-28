@@ -26,6 +26,7 @@ AZ        18 Jan 2024    THM, Manual code review and Dynamic App Security Testin
 AAA       17 Feb 2024    THM, Logstash: Data Processing Unit
 AAB       18 Feb 2024    THM, Wazuh Custom Alert Rules
 AAC       23 Feb 2024    THM, Slingshot Elastic Stack Challenge
+AAD       24 Feb 2024    THM, Sigma Rule Writing. Yuck
 ******************************************************************************************************************************
 BA        XX Feb 2024    SOC Automation Project
 ******************************************************************************************************************************
