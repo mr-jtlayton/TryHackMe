@@ -30,14 +30,15 @@ AAD       24 Feb 2024    THM, Sigma Rule Writing. Yuck
 ******************************************************************************************************************************
 BA        XX Feb 2024    SOC Automation Project
 ******************************************************************************************************************************
-CA       12 Feb 2024    Splunk, Search Processing Language Basics
-CB       14 Feb 2024    Regex Search Practice
-CC       XX Feb 2024    ELF Files
-CD       XX Feb 2024    .Conf Files
-CE       XX Feb 2024    Fixing event boundaries as it applies to log ingestion
-CF       XX Feb 2024    
-CG       XX Feb 2024    
-CH       04 Mar 2024    Threat Hunting, Catching Pass the Hash Attack
+CA        12 Feb 2024    Splunk, Search Processing Language Basics
+CB        14 Feb 2024    Regex Search Practice
+CC        XX Feb 2024    ELF Files
+CD        XX Feb 2024    .Conf Files
+CE        XX Feb 2024    Fixing event boundaries as it applies to log ingestion
+CF        XX Feb 2024    
+CG        XX Feb 2024    
+CH        04 Mar 2024    Threat Hunting, Catching Pass the Hash Attack
+CI        04 Mar 2024    THM Hunt Me II Typo Squatters, Kibana
 ******************************************************************************************************************************
 DA        17 Feb 2024    Arch Linux Install Small Project
 ******************************************************************************************************************************
@@ -449,6 +450,10 @@ CG - Defeat, for now - At this point I had overused the room and extended my tim
 CH - Continued work with Kibana Over the Past Week, Pass-The-Hash - Looking for the exploitation of using stolen hashes to bypass the need for a plaintext password. Certain protocols like NLTM are most susceptible to this. There are certain event numbers that could be potential indicators of the PassTheHash (PTH) attack. 4648 - A logon was attempted using explicit credentials, 4624 - An account was successfully logged on (pay special attention to the Logon Type of 2), 4672 - Special privileges assigned to new logon (Which can be used to track the activity of an administrative account. Going back to the logon type of 4624, a type 2 indicateds an interactive logon which is probably a good sign. A logon type 3 is a network logon and you might find under the event details that NTLM authentication was used. An event logon type of 9 is associated with a NewCredential which could very well be a sign of PTH when investigated closer. Forgot to mention these are SYSMON alerts, if we weren't already tracking
 
 CH - Following the PTH Attacker - After filtering down to Event ID 4624 and logon type 3 (network) and NLTM I now have 12 events of which two are false positives and the rest are associated with two user accounts. I sort by time to see the order of which these attacks took place and then I view surrounding documents to see what the attacker decided to do once authenticating via PTH. Additionaly I add the user.name filter for the useraccount and remove authenitcation events so I can get down to the juicy stuff. I find cmd and powershell use to change into the admin directory and execute a 'whoami' command. Lastly, I see the attacker change values found in TrustedHosts.
+
+CI - Getting Started - I know that a user downloaded a program he believed to be 7zip which an attacker took advantage of with a webpage called 7zipp that my guy was unaware enough to click on and download. I struggled to find the exact logs which document the url from which he downloaded the malicious file. The problem was that I was filtering by username and instead I needed to filter by workstation number since it was the workstation that was infected after all and not his user account. Once I located the URL I noticed that the process ID from the log collector is 2036 which means remote code execution attempt over DNS, yikes! 
+
+CI - I needed to determine the PID for the process that executed the malicious software. We know the malicious software is called 7z2301-x64.msi. Placing that in quotes narrows results to 14 hits. We also know we are looking for an event.action of "Process Create" which leaves us with one hit. The attacker used msiexec.exe to execute the new file that was downloaded. I looked for any other files that were downloaded and executed through powershell using filters for process creation and powershell as a process and then by oldest events first. I filtered by just the command line text which was returned as the parent command and found that a legit version of 7zip was also installed. I found the name of the service associated with the threat so I began to filter by the service name. After discovering the parsing tool being used, I noticed it was being told to write to a file called trash. Pretty funny. So now to look for the final form of trash before extraction to see if they were successful in finding credentials. I sort the newest on top and the final event was the parsing tool being stopped. The event before that has what I want. When looking for reset credentials or new credentials I found a short cut which was unexpected by filtering event.module to only sysmon.
 
 
 
