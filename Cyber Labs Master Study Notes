@@ -34,6 +34,7 @@ AAF        04 Mar 2024    THM, Threat Hunting, Catching Pass the Hash Attack
 AAG        04 Mar 2024    THM, Hunt Me II Typo Squatters, Kibana
 AAH        05 Mar 2024    THM, Threat Simulating with AtomicTest and MITRE ATT&CK Navigator
 AAI        10 Mar 2024    THM, Caldera, Threat Simulating
+AAJ        16 Mar 2024    THM, Linux Priv Escalation
 
 ******************************************************************************************************************************
 ***BRAVO Index primarily used to document SOC Analyst related labs***
@@ -455,6 +456,41 @@ AAG - I needed to determine the PID for the process that executed the malicious 
 AAH - AtomicTest - This was interesting. This was the first time I used an automation-type tool on a Windows machine. The magic words were Invoke-AtomicTest. You can prefix this with "help" to get an options list. I used -ShowDetails alot to see the various tests being performed as they applied to the various ATT&CK techniques I fed the command. The navigator tool loaded to the virtual machine kind of sucked and was out of date so I went to the live page to determine some of the threat techniques in use. I used the -ShowPrereqs command to determine what can and cannot be run on Windows hosts. I am curious to know if the gaps are filled by using a Linux machine in addition to. I am getting a lot of practice using a combination of options with AtomicTest which is cool
 
 AAI - Caldera Setup and Start - I have the idea that Caldera is very similar to Atomic Red Team and their Atomic Test, but Caldera has quite a bit more options and is a little easier to use. I have two machines. One is a machine I am going to be access the Caldera user interface and then run simulated attacks against the same machine. The other machine is going to Remmina (RDP) into the first machine and also host the Caldera server via Python3. I started up Caldera in a python virtual environment using the following command from within the directory: source ../caldera_venv/bin/activate. I waited for the output that stated "All Systems Ready" which lets me know that Caldera is ready. Next I launched the python 3 web server with: python3 server.py --insecure which will host the Caldera virtual environment. Now I was instructed to access the server using port 8888, which did work, but I am trying to figure out how I would have known that on my own because I don't see it in any terminal output from either the python3 or Caldera commands. I was able to find the reason in the README file which indicated that port 8888 is the default port. I was hoping to find the "default.yml" file or similar file that specified the port, but I couldn't find it and it's time to move on. Fun fact, psh is short for powershell, atleast in Caldera, which is good to know because it is used frequently and this could be letting you know that an attack is going to show up in a powershell window. Once an adversary has been selected there is no need for further action beyond verifying the settings for things such as the executors (example being PowerShell). Next is operations where I create a new operation and specify the adversary previously selected (Enumerator in this case). Advanced options are important to verify. Once I hit start the tasklist begins to populate (we are still in the operations tab). I am able to monitor their progress and view the commands that are being used to simulate these attacks. I've noticed some successes and some failures. I wam able to review the output to better understand why certain tests failed.
+
+AAJ - I needed a break from the SOC Level 2 path so I have been journeying down the Jr. Pen Test path the last week. This is the first time I felt compelled to make an entry here. So today is all about escalating my privilege within a Linux machine. I have access to a low-level user and I began enumerating to find an exploit. I run the uname -a command to get info about the OS and the kernal which leads to an exploit. A quick Google search brings me to a cve.mitre.org page, specifically for CVE-2015-1328 which is described as, "The overlayfs implementation in the linux (aka Linux kernel) package before 3.19.0-21.21 in Ubuntu through 15.04 does not properly check permissions for file creation in the upper filesystem directory, which allows local users to obtain root access by leveraging a configuration in which overlayfs is permitted in an arbitrary mount namespace.". Cool so next I find that there are two different scripts linked under the references section of the webpage. Admittedly when I open these links I find two scripts that I have no idea what is going on. I was expecting some sort of python3 script but neither appeared to be so. Until I figure out what is going on with these scripts, I know one thing for sure which is that I need to save the scripts to the target machine. The user account I am using straight up sucks. I cannot write to a file and there is no home directory for my user, only for someone else which I can not access. The only place I know I can write to is the /tmp/ directory.
+
+AAJ - Given that I am a noob, I like to use as many resources as possible to solve problems and one of those is ChatGPT which of course can be a bad resource if relied on too heavily and without caution. I arguably use it too much, but I firmly believe I know how to sift through the good and bad information it provides, although I am learning every day. In any case, this is how ChatGPT helped me today: When I couldn't find a place to write a file, I was reminded to use the TMP directory. Once here I was directed to use a file name of ofs.c which was chosen because of the exploit, OverlayFS exploit in C language. THe .c extension indicates it's a C source file, which I never would have figured out on my own. Next I was directed to use gcc which is the GNU Compiler Collection , a standard compiler for the C language and makes the text file an executable script. These are all things I have never had to do before so that is why I felt compelled to make a journal entry. Although I am not jumping into a red team career, it is amazing how much someone can learn about general computer science while working through red team challenges. After I compile the exploit code written in the C language, I execute it and the following output appears in the terminal: "spawning threats >> mount#1 >> mount #2 >> child threads done >> /etc/ld.so.preload created >> creating shared library". And then I ran the sudo -l command to see what sudo priviliges I have gained and badda bing badda boom I have (ALL:ALL) ALL. And whoami reveals that I am infact "root".
+
+AAJ - For the next task my user account has some sudo priviliges to include: "User karen may run the following commands on ip-10-10-197-0:
+    (ALL) NOPASSWD: /usr/bin/find
+    (ALL) NOPASSWD: /usr/bin/less
+    (ALL) NOPASSWD: /usr/bin/nano
+Of which ChatGPT informed me that I could take easy advantasge of the /usr/bin/find with the following script: "sudo find / -exec /bin/sh \; -quit" which quickly spawns a root shell. This runs the find command starting at the root directory and then -executes the shell with /bin/sh \; for every thing that is found. It is so simple and intriguing!
+
+AAJ - Capstone - This was a big challenge room full of information and I haven't stopped to document till now because I am now to use everything I have been exposed to so I will take notes now. This is going to be formatted a little different for the sake of ease of readibility as I enumerate this machine...
+host = 10.10.140.144
+user = leonard, only has permissions to his own home directory and no SUDO :(
+pass = Penny123
+uname -a = Linux ip-10-10-140-144 3.10.0-1160.el7.x86_64 #1 SMP Mon Oct 19 16:18:59 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux. I looked for vulnerabilities related to the kernal but nothing seemed like a plausible route
+cat /proc/version = Linux version 3.10.0-1160.el7.x86_64 (mockbuild@kbuilder.bsys.centos.org) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-44) (GCC) ) #1 SMP Mon Oct 19 16:18:59 UTC 2020
+env = PATH=/home/leonard/scripts:/usr/sue/bin:/usr/lib64/qt-3.3/bin:/home/leonard/perl5/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin:/home/leonard/.local/bin:/home/leonard/bin
+    I am VERY interested in the fact I can execute scripts via /home/leonard/scripts since I have access to the leonard directory.
+Users in /etc/passwd who have bin/bash/ are root, missy, and leonard.
+/etc/shadow permission denied
+find / -perm -u=s -type f 2>/dev/null searches for all files that have the suid bit set which will allow me to potentially run files with higher permissions than my own.
+    SUID bit set binaries of INTEREST:
+        /usr/bin/base64, which I can now use to try and read the shadow file. At first John couldnt crack anything. The unshadow method wasnt working so I manually did it and just retrieved the three users myself.
+        Then I used hashid to analyze just the hashes to determine a hash type. It was determined that the hashes were SHA-512, so then I told John to just focus on SHA-512 using:
+        john --format=sha512crypt shadow.txt --wordlist=/usr/share/wordlists/rockyou.txt and then I got missy's account pretty quick missy:Password1
+Now that I was logged in as Missy I needed to backtrack. So I ran sudo -l and determined that I can used sudo in /usr/bin/find
+    The command that gains me a shell is sudo find / -exec /bin/sh \; -quit
+I struggled to find one of the flags so i used the following command to search for the file: find / -type f -name "*flag1*"
+
+
+
+
+
+
 
 
 *******************************************************************************************************************************
