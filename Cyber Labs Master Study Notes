@@ -78,12 +78,15 @@ FAC        XX Apr 2024    Various Remote Desktop Apps
 FAD        15 Apr 2024    Unknown Executables Associated with Authorized Programs
 FAE        12 Apr 2024    Windows Defender Operating Alongside EDR Solution
 FAF        15 Apr 2024    Use of Unencrypted Protocols for Internal Communications (LDAP and PostgreSQL)   
-FAG        15 Apr 2024    Web Browser Downloads, Executes, then Deletes Executable via Command Shell. No Hash Matches
-FAH        15 Apr 2024    Persistent Trojan Malware
-FAI        16 Apr 2024    Botnets and Sustained Attempts to Connect to Private Networks
-FAJ        16 Apr 2024    Heuristic Detections, Verifying Legitimate Hashes with Vendor
-FAK        16 Apr 2024    Large Amounts of Powershell Executions, Involving Unknown Services Specific to a Client
-FAL
+FAH        15 Apr 2024    Web Browser Downloads, Executes, then Deletes Executable via Command Shell. No Hash Matches
+FAI        15 Apr 2024    Persistent Trojan Malware
+FAJ        16 Apr 2024    Botnets and Sustained Attempts to Connect to Private Networks
+FAK        16 Apr 2024    Heuristic Detections, Verifying Legitimate Hashes with Vendor
+FAL        16 Apr 2024    Large Amounts of Powershell Executions, Involving Unknown Services Specific to a Client
+FAM        XX May 2024    Python Scripts (PS), Packet Analyzer
+FAN        XX May 2024    PS, O365 Sign-in Scrubber
+FAO        XX May 2024    PS, Playbook Automation Tool
+FOP        XX May 2024    PS, Quarantined Email Scrubber
 
 
 ***************************************************************************************************************************************
@@ -576,12 +579,632 @@ Putting this project on the back burner for now, other priorities right now, alt
 
 
 ******************************************************************************************************************************************FOXTROT***
-FA - General Ticket Etiquette - I wanted to write about this first because it has been the trickiest part of the job for me to catch onto. Surprisingly there is plenty to learn here too. In a SOC the Tier 1 analysts are doing the majority of the technical work, getting our hands dirty with all of the tickets, doing the research, gathering evidence, and wrapping it all up in a pretty little package called a ticket. In Jira there are two sides to every ticket. There is the side the customer and the SOC sees and then there are the internal notes that only the SOC is privilege to. In many cases there is two tickets for every issue. This is because every automated alert that is setup to interact with Jira generates a ticket to notify the SOC that is something is up. This is completely seperate from the constant monitoring of different tools/clients that an analyst must do. An analyst could easily spend their entire day in Jira picking up alert tickets without having a free moment to go check the SIEM. This is why an analyst must prioritize the monitoring first and foremost. An MSSP has an obligation to the client to provide a specific service to a specific level. Otherwise what are we paid to do? This is where service level agreements come into play a.k.a SLAs. We gaurentee the client that if a firewall or server goes down we will detect it and start taking action on it in a certain amount of time. If we fail to do so then we are not holding up our end of the deal and that will affect our compensation. Thankfully Jira has the option to have SLAs built into the tickets as they come into the queue. It's not foolproof but it is extremely important.
+FAA - General Ticket Etiquette - I wanted to write about this first because it has been the trickiest part of the job for me to catch onto. Surprisingly there is plenty to learn here too. In a SOC the Tier 1 analysts are doing the majority of the technical work, getting our hands dirty with all of the tickets, doing the research, gathering evidence, and wrapping it all up in a pretty little package called a ticket. In Jira there are two sides to every ticket. There is the side the customer and the SOC sees and then there are the internal notes that only the SOC is privilege to. In many cases there is two tickets for every issue. This is because every automated alert that is setup to interact with Jira generates a ticket to notify the SOC that is something is up. This is completely seperate from the constant monitoring of different tools/clients that an analyst must do. An analyst could easily spend their entire day in Jira picking up alert tickets without having a free moment to go check the SIEM. This is why an analyst must prioritize the monitoring first and foremost. An MSSP has an obligation to the client to provide a specific service to a specific level. Otherwise what are we paid to do? This is where service level agreements come into play a.k.a SLAs. We gaurentee the client that if a firewall or server goes down we will detect it and start taking action on it in a certain amount of time. If we fail to do so then we are not holding up our end of the deal and that will affect our compensation. Thankfully Jira has the option to have SLAs built into the tickets as they come into the queue. It's not foolproof but it is extremely important.
 
-FA - General Ticket Etiquette Cont'd - There are a lot of intricacies that go into a ticketing system that I was not expecting. To stop the SLA timer mentioned previously there must be some sort of response to the customer in the comments and the status of the ticket must be changed to "in progress" which denotes that the analyst is actively working on it. Formatting tickets is simple because you mostly steal the format from a previous ticket of a similar topic. I save and reuse formats that I like, but I find that each ticket needs a little more or a little less from that format. No two tickets of mine are formatted identically. Maybe thats a bad thing. After all I am coming from a military background where everything is standardized, but I like the way I am doing things now so I hope it can stick. Specifying people on the ticket is also interesting. First there is the assignee which is the analyst, then there is the reporter which is supposed to be a representative from the client's agency, there is the approver which is a tier 2 analyst or above, and lastly there is requested participants which I typically add the SOC managers from whatever team the client belongs to. That last part is to keep the SOC managers in the loop since they are the ones doing all the time in meetings with the clients. I like to think this affords me the opportunity to present my work quality, but I'm not sure how many tickets they look at given the sheer volume of tickets.
+FAA - General Ticket Etiquette Cont'd - There are a lot of intricacies that go into a ticketing system that I was not expecting. To stop the SLA timer mentioned previously there must be some sort of response to the customer in the comments and the status of the ticket must be changed to "in progress" which denotes that the analyst is actively working on it. Formatting tickets is simple because you mostly steal the format from a previous ticket of a similar topic. I save and reuse formats that I like, but I find that each ticket needs a little more or a little less from that format. No two tickets of mine are formatted identically. Maybe thats a bad thing. After all I am coming from a military background where everything is standardized, but I like the way I am doing things now so I hope it can stick. Specifying people on the ticket is also interesting. First there is the assignee which is the analyst, then there is the reporter which is supposed to be a representative from the client's agency, there is the approver which is a tier 2 analyst or above, and lastly there is requested participants which I typically add the SOC managers from whatever team the client belongs to. That last part is to keep the SOC managers in the loop since they are the ones doing all the time in meetings with the clients. I like to think this affords me the opportunity to present my work quality, but I'm not sure how many tickets they look at given the sheer volume of tickets.
 
-FB - False Positives - These are the majority of tickets we see, or so I am told, but I don't seem to find many. I think there can be some confusion with these too. The process for establishing False Positives is not perfect. It goes something like this: Analyst creates topic for detected issue -> Ticket goes up the chain to the client -> Client may or may not take the time to do the investigating on their end -> Client gives feedback at meetings with SOC managers or via the ticket -> SOC Managers are responsible for updating whatever tracking system is in place -> Analysts are responsible for checking False Positive list during the investigation of a ticket. Checking the list isn't particularly time consuming, but an analyst must know what the ticket is even about before consulting the list. I struggle with getting over consumed by my investigation and not checking the false positive list early in the process which has led me to getting pretty far along in a ticket only to realize it is a false positive. Ouch! The other problem is that the SOC managers can be over busy and forget to update False Positive trackers. Not a big deal if I am able to find client feedback in old tickets, but if the client shared the feedback in a meeting, then I am none the wiser. This has happened a few times already. Another issue with False Positives is that analysts are not digging deep enough to see that there is more to the ticket than what is at the surface level. They see that on the False Positive list that an executable i.e., cmd.exe is on the false positive list, but they may not take the time to go into the weeds and see what was being executed in a command shell such as a suspicious script or something of the sorts. This is time consuming but this is the kind of digging that I am interested in doing if it means getting better at this job. I hope all analysts are.
+FAB - False Positives - These are the majority of tickets we see, or so I am told, but I don't seem to find many. I think there can be some confusion with these too. The process for establishing False Positives is not perfect. It goes something like this: Analyst creates topic for detected issue -> Ticket goes up the chain to the client -> Client may or may not take the time to do the investigating on their end -> Client gives feedback at meetings with SOC managers or via the ticket -> SOC Managers are responsible for updating whatever tracking system is in place -> Analysts are responsible for checking False Positive list during the investigation of a ticket. Checking the list isn't particularly time consuming, but an analyst must know what the ticket is even about before consulting the list. I struggle with getting over consumed by my investigation and not checking the false positive list early in the process which has led me to getting pretty far along in a ticket only to realize it is a false positive. Ouch! The other problem is that the SOC managers can be over busy and forget to update False Positive trackers. Not a big deal if I am able to find client feedback in old tickets, but if the client shared the feedback in a meeting, then I am none the wiser. This has happened a few times already. Another issue with False Positives is that analysts are not digging deep enough to see that there is more to the ticket than what is at the surface level. They see that on the False Positive list that an executable i.e., cmd.exe is on the false positive list, but they may not take the time to go into the weeds and see what was being executed in a command shell such as a suspicious script or something of the sorts. This is time consuming but this is the kind of digging that I am interested in doing if it means getting better at this job. I hope all analysts are.
+
+FAC
+
+FAD
+
+FAE
+
+FAF
+
+FAH
+
+FAI
+
+FAK
+
+FAL
+
+FAM - Python Script, Packet Analyzer - The idea for this came from the ability to download PCAPs from Cisco's Firepower tool and then analyzing them myself. I would manually look through with WireShark, but I thought why not make a python script that very quickly gives me the key info I need for my notes. The script's comments explain what the script does.
+
+from scapy.all import rdpcap, IP, TCP
+
+def analyze_pcap(file_path):
+    # Load the PCAP file
+    packets = rdpcap(file_path)
+
+    # Initialize a list to hold packet summaries
+    packet_summaries = []
+
+    # Analyze each packet
+    for packet in packets:
+        if IP in packet:
+            # Extract IP and TCP information
+            src_ip = packet[IP].src
+            dst_ip = packet[IP].dst
+            src_port = dst_port = proto = ''
+            
+            if TCP in packet:
+                src_port = packet[TCP].sport
+                dst_port = packet[TCP].dport
+                proto = 'TCP'
+            
+            # Prepare packet summary
+            summary = f'Source IP: {src_ip}, Source Port: {src_port}, Destination IP: {dst_ip}, Destination Port: {dst_port}, Protocol: {proto}'
+            packet_summaries.append(summary)
+
+    # Print all summaries
+    for summary in packet_summaries:
+        print(summary)
+
+# Replace 'path_to_your_pcap_file.pcap' with the path to your PCAP file
+analyze_pcap(r"C:\Users\tanne\Downloads\pcaps\request_1715008119.pcap")
+
+FAN - Python Script, O365 Sign-In Scrubber - This idea came from a process that I thought wasn't very streamlined because it required downloading a CSV file from Microsoft Entra ID, then formating it, and finally using excel filtering tools to find the goods. So this script does the majority of that work for us. My goal is to build it around each of our clients as I go so that specific details about a client can be considered when looking for suspicious logins. We mainly care about successful logins, the ones that stand out the most will be out of country logins. Next we look for impossible travel scenarios, which are often the result of a VPN being used. Clients don't typically want their employees using third party VPNs when accessing their private network so that's still reason for concern. 
+
+import pandas as pd
+from geopy.distance import geodesic
+from datetime import timedelta
+from opencage.geocoder import OpenCageGeocode
+import time
+
+pd.set_option('display.max_rows', 500)  # Adjust the number of rows to display
+
+# Replace with your OpenCage API key
+API_KEY = '8982f521bd2a447d97b92403ce15b1c2'
+geocoder = OpenCageGeocode(API_KEY)
+
+def load_data(file_path):
+    data = pd.read_csv(file_path, low_memory=False)
+    # Ensure 'Date (UTC)' is parsed as datetime type
+    data['Date (UTC)'] = pd.to_datetime(data['Date (UTC)'])
+    return data
+
+def extract_country(location_string):
+    parts = location_string.split(',')
+    if parts:
+        country = parts[-1].strip()  # Get the last part and strip whitespace
+        return country
+    return None
+
+def extract_city(location_string):
+    parts = location_string.split(',')
+    if len(parts) > 1:
+        city = parts[-2].strip()  # Get the second last part and strip whitespace
+        return city
+    return None
+
+def geocode_location(city, country):
+    query = f'{city}, {country}'
+    result = geocoder.geocode(query)
+    if result and len(result):
+        return result[0]['geometry']['lat'], result[0]['geometry']['lng']
+    return None, None
+
+def filter_suspicious_logins(data, allowed_countries, client):
+    data['Country'] = data['Location'].apply(extract_country)
+    data['City'] = data['Location'].apply(extract_city)
+    
+    # Debug: Print the unique values of extracted countries to see what is being processed
+    print("Unique Countries Extracted:", data['Country'].unique())
+    
+    # Filter logins based on non-allowed countries and successful status
+    suspicious_logins = data[(~data['Country'].isin(allowed_countries)) & (data['Status'] == 'Success')]
+    return suspicious_logins
+
+def calculate_travel_time(location1, location2):
+    distance = geodesic(location1, location2).kilometers
+    travel_time_hours = distance / 800  # Assuming average commercial flight speed of 800 km/h
+    return timedelta(hours=travel_time_hours)
+
+def check_impossible_travel(logins):
+    print("\nImpossible Traffic Check in Progress")
+    # Only consider successful logins
+    logins = logins[logins['Status'] == 'Success']
+    # Exclude users containing "Defend Edge"
+    logins = logins[~logins['User'].str.contains("Defend Edge", case=False, na=False)]
+    logins = logins.sort_values(by='Date (UTC)')
+    suspicious = []
+
+    user_groups = logins.groupby('User')
+    for user, group in user_groups:
+        group = group.sort_values(by='Date (UTC)')
+        for i in range(1, len(group)):
+            prev_login = group.iloc[i - 1]
+            curr_login = group.iloc[i]
+            time_diff = curr_login['Date (UTC)'] - prev_login['Date (UTC)']
+            if prev_login['City'] != curr_login['City']:
+                prev_city = prev_login['City']
+                prev_country = prev_login['Country']
+                curr_city = curr_login['City']
+                curr_country = curr_login['Country']
+                
+                prev_coords = geocode_location(prev_city, prev_country)
+                curr_coords = geocode_location(curr_city, curr_country)
+                
+                if prev_coords != (None, None) and curr_coords != (None, None):
+                    min_travel_time = calculate_travel_time(prev_coords, curr_coords)
+                    if time_diff < min_travel_time:
+                        suspicious.append(curr_login)
+                        print(f'Impossible travel detected for user {user} between {prev_city}, {prev_country} and {curr_city}, {curr_country}')
+                time.sleep(1)  # To avoid hitting API rate limits
+    
+    return pd.DataFrame(suspicious)
+
+def main():
+    file_path = r"C:\Users\tanne\Downloads\SignIns_2024-05-06_2024-05-13.csv"
+    client = input("Type client's name, first word only, capitalize the first letter or whole acronym (i.e., Cresa, Compass, GRP): ")
+    
+    if client == "":
+        allowed_countries = ['US', 'CA', 'PH']
+    elif client == "":
+        allowed_countries = ['US']
+    else:
+        allowed_countries = ['US']  # Default to US if the client is unknown
+    
+    login_data = load_data(file_path)
+    suspicious_logins = filter_suspicious_logins(login_data, allowed_countries, client)
+    
+    # Check for impossible travel
+    impossible_travel_logins = check_impossible_travel(login_data)
+    
+    if not suspicious_logins.empty or not impossible_travel_logins.empty:
+        if not suspicious_logins.empty:
+            # Sort the data by 'User' and 'Date (UTC)' in ascending order
+            suspicious_logins_sorted = suspicious_logins.sort_values(by=['User', 'Date (UTC)'], ascending=[True, True])
+            print("Suspicious Logins Found:")
+            # Format 'Date (UTC)' for readability
+            suspicious_logins_sorted['Date (UTC)'] = suspicious_logins_sorted['Date (UTC)'].dt.strftime('%Y-%m-%d %H:%M:%S')
+            print(suspicious_logins_sorted[['Date (UTC)', 'User', 'IP address', 'Location', 'Status']])
+        
+        if not impossible_travel_logins.empty:
+            print("Impossible Travel Logins Found:")
+            impossible_travel_logins['Date (UTC)'] = impossible_travel_logins['Date (UTC)'].dt.strftime('%Y-%m-%d %H:%M:%S')
+            print(impossible_travel_logins[['Date (UTC)', 'User', 'IP address', 'Location', 'Status']])
+    else:
+        print("No suspicious logins found.")
+
+if __name__ == "__main__":
+    main()
+
+FAO - PS, Playbook Automation Tool - This idea came about when I was learning the ropes of how to handle a specific client that has unique needs when compared to other clients. There is a playbook of sorts but its spread across too many documents. There is also a strict SLA time requirement for this client so I knew there was a need for this tool. This is probably the most important tool I've made yet. The script has been scrubbed of anything that can't be shared:
 
 
+import openpyxl
+import csv
+import re
+from datetime import datetime, timedelta
+import pytz
+from colorama import init, Fore, Style
+import difflib
+from art import text2art
+
+# Generate ASCII art
+art = text2art("Project     \Automation   Tool")
+
+# Print the generated ASCII art
+print(art)
 
 
+init(autoreset=True)  # Initialize colorama to auto-reset styles
+
+
+def open_excel_document(file_path):
+    """Load the Excel workbook and return the active sheet."""
+    workbook = openpyxl.load_workbook(filename=file_path, data_only=True)
+    return workbook.active
+
+
+def get_color_description(cell):
+    """Return a string description of the cell's fill color."""
+    if cell.fill.fgColor.type == 'rgb' and cell.fill.fgColor.rgb:
+        return cell.fill.fgColor.rgb
+    elif cell.fill.fgColor.type == 'theme':
+        return f"Theme color: {cell.fill.fgColor.theme}"
+    elif cell.fill.fgColor.type == 'indexed':
+        return f"Indexed color: {cell.fill.fgColor.indexed}"
+    elif cell.fill.fgColor.type == 'auto':
+        return "No fill color set or default (auto)"
+    else:
+        return "No fill color set"
+
+
+def find_node_and_site(sheet, search_node):
+    """Find the node and the corresponding site in the sheet, checking for color scope."""
+ \  = False  # Initialize \ as False
+    for row in sheet.iter_rows(min_row=1, max_row=sheet.max_row):
+        for cell in row:
+            if cell.column == 2 and search_node in str(cell.value):  # Node is in column B
+                # Check if the node contains "" or ""
+                if "" in str(cell.value) or "\" in str(cell.value):
+                    \ = True
+                color_description = get_color_description(cell)
+                if color_description == '00000000':  # Check if out of scope
+                    print(f"{Fore.RED}Node {search_node} is out of scope, Color: {color_description}")
+                    return None, None, \
+                row_index = cell.row
+                while row_index > 0:
+                    site_cell = sheet.cell(row=row_index, column=1)
+                    if site_cell.value:
+                        site = str(site_cell.value)
+                        print(f"{Fore.GREEN}**MATCH FOUND** (In scope)... Node: {Fore.YELLOW + search_node + Fore.GREEN}, Site: {Fore.YELLOW + site + Fore.GREEN}, Color: {color_description}")
+                        return site, color_description, \
+                    row_index -= 1
+    print(f"{Fore.RED}Node {search_node} not found in node list. Try to search node list by node name (case-sensitive), instead of IP.")
+    return None, None, \
+
+def read_csv_for_site_info(csv_path, site_name):
+    """Read CSV file and return information for the specified site with flexible matching."""
+    normalized_site_name = re.sub(r'\s*\([^)]*\)', '', site_name).replace("HD", "\").strip().upper()
+
+    try:
+        with open(csv_path, newline='', encoding='utf-8') as csvfile:
+            return process_csv(csvfile, normalized_site_name)
+    except UnicodeDecodeError:
+        try:
+            with open(csv_path, newline='', encoding='latin-1') as csvfile:
+                return process_csv(csvfile, normalized_site_name)
+        except UnicodeDecodeError:
+            print("Failed to read the CSV file with both UTF-8 and Latin-1 encodings.")
+    except FileNotFoundError:
+        print(f"CSV file not found: {csv_path}")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+    return None
+
+def process_csv(csvfile, normalized_site_name):
+    """ Helper function to process the CSV file """
+    reader = csv.reader(csvfile)
+    headers = next(reader, None)
+    highest_similarity = 0
+    best_match_details = None
+    for row in reader:
+        csv_site_name = re.sub(r'\s*\([^)]*\)', '', row[1]).replace("HD", "Home Depot").strip().upper()
+        similarity = difflib.SequenceMatcher(None, normalized_site_name, csv_site_name).ratio()
+        if similarity > highest_similarity:
+            highest_similarity = similarity
+            best_match_details = row
+    if highest_similarity > 0.51:  # Adjust threshold as necessary
+        return dict(zip(headers, best_match_details))
+    return None
+
+def print_colored(text):
+    """Print text with URLs in a different color."""
+    url_pattern = r'https?://[^\s]+'
+    parts = re.split(url_pattern, text)
+    urls = re.findall(url_pattern, text)
+    for part, url in zip(parts, urls + ['']):
+        print(Fore.GREEN + part + Fore.YELLOW + url, end='')
+    print(Style.RESET_ALL)
+
+def parse_site_contact_info(info_string):
+    fields = info_string.split('\t')
+    if len(fields) >= 11:
+        return {
+            'Tier': fields[0],
+            'Site Name': fields[1],
+            'Headcount': fields[2],
+            'Service Address': fields[3],
+            'Service City/Zip': fields[4],
+            'Primary Contact': fields[5],
+            'Primary Contact Desk': fields[6],
+            'Primary Contact Cell': fields[7],
+            'Secondary Contact': fields[8],
+            'Secondary Contact Desk': fields[9],
+            'Secondary Contact Cell': fields[10],
+            'Hours of Operation': Fore.GREEN + fields[11] + Style.RESET_ALL
+        }
+    else:
+        print(f"{Fore.RED}Error: The provided site contact info string does not contain the expected number of fields.")
+        return None
+
+def collect_ticket_info(node, site, site_info):
+    """Collect information from the analyst to create a ticket, after providing power outage details."""
+    down_time = input("\nEnter the time the node went down based on the 'Active Time' in a 24hr format (hh:mm): ")
+    down_time_dt = datetime.strptime(down_time, "%H:%M") + timedelta(minutes=15)
+    print(f"Deadline is {Fore.YELLOW + down_time_dt.strftime('%H:%M')}")
+
+    input(f"\nCHECK IF A  TICKET HAS ALREADY BEEN MADE!\n\nSearch: {Fore.YELLOW + site + Style.RESET_ALL}. Check current 'Problems', 'Incidents', look for 'Outages', etc.\n\nIf so take a screenshot and create a Jira summary ticket. Correlate all related/automated Jira Tickets to the summary ticket\n\npress ENTER to continue with the ticket creation process...")
+    ticket_type = input("Is the entire site down? 'y' or 'n': ")
+    if ticket_type == 'y':
+        ticket_type = "Problem"
+    else:
+        "Incident"
+    print(f"You will be creating a {ticket_type} Ticket")
+    print(f"\n1. If a ticket DOES NOT exist, go to your  webpage tab and search {Fore.YELLOW + site + Style.RESET_ALL}\n")
+    info_string = input("Copy and paste all site contact data here: ")
+    site_contact_info = parse_site_contact_info(info_string)
+
+    if site_contact_info is None:
+        print(f"{Fore.RED}Failed to parse site contact information. Please check the input format and try again.")
+        return None
+
+    print("\nParsed Site Information:")
+    for key, value in site_contact_info.items():
+        print(f"{key}: {value}")
+    make_contact = input("\nIs right now within business hours, 'y' or 'n'?: ")
+    if make_contact == "y":
+        make_contact = True
+    else:
+        make_contact = False
+
+    print("\n2. Check for Power Outages. **ALWAYS TAKE A SCREENSHOT OF THE MAP**:\n")
+    for key, value in site_info.items():
+        if key == 'Power Company':
+            print(f"{key}: ", end='')
+            print_colored(value)
+        else:
+            print(f"{key}: {Fore.GREEN + value + Style.RESET_ALL}")
+    issue_type = input(f"Enter the type of issue ('Power' or 'Network'): ") + " Outage"
+    print(issue_type)
+
+    tier = site_contact_info.get('Tier', 'Unknown')
+    if tier == 'Tier 1' and make_contact:
+        print("\nTier 1 site/node down: No need to escalate to the On-Call engineer. Contact site POC.")
+    elif tier in ['Tier 2', 'Tier 3', 'Tier 4'] and ticket_type == "problem":
+        print(f"\nFor {tier} SITE outage escalate to On-Call engineer.")
+    else:
+        print(f"\nFor {tier} individual node outages contact ({site_contact_info.get('Primary Contact', 'Secondary Contact') or site_contact_info.get('Secondary Contact')}) at {site_contact_info.get('Primary Contact Cell' or 'Primary Contact Desk') or ('Secondary Contact Cell' or 'Primary Contact Desk')}")
+    print("Script is located at: ")
+    
+    problem_start = down_time
+    diagnosis = input("Enter the diagnosis details: ")
+    workaround = input("Enter the workaround details (if any, else leave blank): ")
+    hours_of_operation = site_contact_info.get('Hours of Operation')
+
+    ticket = {
+        "Title": f"{site} – {issue_type}",
+        "Description": f"{site} - {node} is Down. \n\nTier: {tier} \n\nHead Count: {site_contact_info.get('Headcount', 'N/A')}.\n\nHours of Operation",
+        "Diagnosis": diagnosis,
+        "Workaround": workaround,
+        "Problem type": issue_type,
+        "Environment": "Production",
+        "Priority": f"Tier {tier}",
+        "Critical applications affected": "Facility Power" if "Power" in issue_type else "Network",
+        "Primary Contact": site_contact_info.get('Primary Contact', 'N/A'),
+        "Contact Phone": site_contact_info.get('Primary Contact Cell', site_contact_info.get('Primary Contact Desk', 'N/A')),
+        "Business Hours": site_contact_info.get('Hours of Operation')
+    }
+    return ticket
+
+def main():
+    excel_path = ''
+    csv_path = ''
+    
+    worksheet = open_excel_document(excel_path)
+    search_node = input("Enter the node name (case-sensitive) or IP to check: ")
+    site, color_description,  = find_node_and_site(worksheet, search_node)
+    
+    if site and color_description:
+        site_info = read_csv_for_site_info(csv_path, site)
+        if site_info:
+            ticket_info = collect_ticket_info(search_node, site, site_info)
+            print("\nCollected Ticket Information:\n")
+            for key, value in ticket_info.items():
+                print(f"{key}: {value}")
+            print("\nPlease manually enter this information into the  system.")
+            if :
+                print("complete an ticket. Grab asset ID as 'SYSTEM NAME' from ")
+        else:
+            print(f"No matching site information found for {site}.")
+    else:
+        print("The node is out of scope or not found. No ticket will be created.")
+
+if __name__ == "__main__":
+    main()
+
+FAP - PS, Quarantined Email Scrubber - This one is a step forward in coding for me because I start making API calls to handle work that would take quite awhile. This tool takes advantage of VirusTotal, MX Toolbox, and IP lookup to help paint a more complete picture for the analyst when investigating potentially innocent emails or even malicious ones if thats the goal.
+
+import pandas as pd
+import vt
+import requests
+from tabulate import tabulate
+import sys
+from colorama import init, Fore, Style
+import tldextract
+import logging
+
+# Setup logging
+logging.basicConfig(filename='email_scrubber.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# API keys setup
+virus_total_api_key = 'e2f5fe456e7cdebe7293b7d7daa0f9d32dd072492e3eb56d88472c8d96502450'
+mxtoolbox_api_key = 'f8645fcb-1b1e-4009-a61e-fef75b8eb9ca'
+ipinfo_access_token = 'b824a991f7ca57'
+client = vt.Client(virus_total_api_key)
+
+CRITICAL_BLACKLISTS = [
+    "Spamhaus", "SURBL", "SORBS", "SpamCop", "Barracuda", "Invaluement"
+]
+
+GENERAL_BLACKLISTS = [
+    "UCEPROTECT", "LashBack", "Backscatterer", "RATS-Dyna", "RATS-Spam"
+]
+
+def load_data(filepath):
+    return pd.read_csv(filepath)
+
+def extract_domain_ip_map(data):
+    domain_ip_map = {}
+    for index, row in data.iterrows():
+        ip = row['Client IP']
+        email_domain = row['From'].split('@')[-1] if '@' in row['From'] else None
+        if email_domain:
+            extracted = tldextract.extract(email_domain)
+            domain = f"{extracted.domain}.{extracted.suffix}" if extracted.suffix else None
+        else:
+            domain = None
+
+        if ip not in domain_ip_map:
+            domain_ip_map[ip] = {'domains': set(), 'info': None}
+        if domain:
+            domain_ip_map[ip]['domains'].add(domain)
+    return domain_ip_map
+
+def check_domain_blacklist(domain):
+    url = f"https://api.mxtoolbox.com/api/v1/lookup/blacklist/{domain}?Authorization={mxtoolbox_api_key}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        failed = data.get('Failed', [])
+        passed = data.get('Passed', [])
+        total_checks = len(failed) + len(passed)
+        blacklist_hits = len(failed)
+        return {
+            'BlacklistHits': blacklist_hits,
+            'TotalChecks': total_checks,
+            'Failed': failed,
+            'Passed': passed
+        }
+    else:
+        logging.error(f"DEBUG (Domain): URL: {url}, Response: {response.text}")
+        return {'error': f"Failed with status code {response.status_code}", 'message': response.text}
+
+def evaluate_blacklist_status(domain, blacklist_status):
+    hits = blacklist_status['BlacklistHits']
+    critical_hits = 0
+
+    for failed_entry in blacklist_status['Failed']:
+        blacklist_name = failed_entry.get('Name', '')
+        if any(critical_blacklist in blacklist_name for critical_blacklist in CRITICAL_BLACKLISTS):
+            critical_hits += 1
+
+    if critical_hits > 0:
+        return f"Domain {domain} is listed on {critical_hits} critical blacklists. Action needed!"
+    if hits >= 3:
+        return f"Domain {domain} is listed on {hits} blacklists. Consider action."
+
+    return f"Domain {domain} is listed on {hits} blacklists."
+
+def check_ip_blacklist(ip):
+    url = f"https://api.mxtoolbox.com/api/v1/lookup/blacklist?argument={ip}"
+    headers = {'Authorization': mxtoolbox_api_key}
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        failed = data.get('Failed', [])
+        passed = data.get('Passed', [])
+        total_checks = len(failed) + len(passed)
+        blacklist_hits = len(failed)
+        return {
+            'BlacklistHits': blacklist_hits,
+            'TotalChecks': total_checks,
+            'Failed': failed,
+            'Passed': passed
+        }
+    elif response.status_code == 400 and "Over Daily API Limit" in response.text:
+        logging.warning("DEBUG (IP): Over Daily API Limit reached. Stopping further checks.")
+        return {'error': "Over Daily API Limit reached", 'message': response.text}
+    else:
+        logging.error(f"DEBUG (IP): URL: {url}, Headers: {headers}, Response: {response.text}")
+        return {'error': f"Failed with status code {response.status_code}", 'message': response.text}
+
+def scan_url_virustotal(url):
+    try:
+        analysis = client.scan_url(url, wait_for_completion=True)
+        analysis_results = client.get_object(f"/analyses/{analysis.id}")
+        return analysis_results.stats
+    except vt.error.APIError as e:
+        return {'error': str(e)}
+
+def get_ip_info(ip):
+    url = f"https://ipinfo.io/{ip}/json?token={ipinfo_access_token}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        return {
+            'City': data.get('city', 'Not available'),
+            'Country': data.get('country', 'Not available'),
+            'Organization': data.get('org', 'Not available')
+        }
+    else:
+        return {'error': f"Failed with status code {response.status_code}"}
+
+def analyze_email_size(size, low_threshold=100, high_threshold=1000000):
+    if size < low_threshold:
+        return f"Size: {size} bytes - Suspiciously small, potential phishing attempt."
+    elif size > high_threshold:
+        return f"Size: {size} bytes - Suspiciously large, potential malware content."
+    else:
+        return None
+
+def main():
+    init()
+    try:
+        data = load_data(r"C:\Users\tanne\Downloads\History_LogSearchResult_2024-05-14-16-12.csv")
+        domain_ip_map = extract_domain_ip_map(data)
+
+        for ip in domain_ip_map.keys():
+            domain_ip_map[ip]['info'] = get_ip_info(ip)
+
+        print("\nUnique IPs and Associated Domains:")
+        table_data = []
+        for ip, details in domain_ip_map.items():
+            domains = ', '.join(details['domains'])
+            ip_info = details['info']
+            city = ip_info.get('City', 'N/A')
+            country = ip_info.get('Country', 'N/A')
+            organization = ip_info.get('Organization', 'N/A')
+            table_data.append([ip, domains, city, country, organization])
+        print(tabulate(table_data, headers=['IP', 'Domains', 'City', 'Country', 'Organization']))
+        logging.info(f"\nUnique IPs and Associated Domains:\n{tabulate(table_data, headers=['IP', 'Domains', 'City', 'Country', 'Organization'])}")
+
+        print("\nDomain Blacklist Checks:")
+        for ip, details in domain_ip_map.items():
+            for domain in details['domains']:
+                blacklist_status = check_domain_blacklist(domain)
+                if 'error' not in blacklist_status:
+                    evaluation = evaluate_blacklist_status(domain, blacklist_status)
+                    print(evaluation)
+                    logging.info(evaluation)
+                else:
+                    error_message = f"Domain: {domain}, Error: {blacklist_status['error']}"
+                    print(error_message)
+                    logging.error(error_message)
+
+        print("\nIP Blacklist Checks:")
+        for ip in domain_ip_map.keys():
+            ip_blacklist_status = check_ip_blacklist(ip)
+            if 'error' in ip_blacklist_status and ip_blacklist_status['error'] == "Over Daily API Limit reached":
+                print("Reached daily API limit for IP blacklist checks. Exiting IP blacklist checks.")
+                logging.warning("Reached daily API limit for IP blacklist checks. Exiting IP blacklist checks.")
+                break
+            elif 'error' not in ip_blacklist_status:
+                hits = ip_blacklist_status['BlacklistHits']
+                total = ip_blacklist_status['TotalChecks']
+                result_message = f"IP: {ip}, Blacklist Status: {hits} out of {total} blacklists"
+                print(result_message)
+                logging.info(result_message)
+            else:
+                error_message = f"IP: {ip}, Error: {ip_blacklist_status['error']}"
+                print(error_message)
+                logging.error(error_message)
+
+        print("\nIP VirusTotal Scan Results:")
+        for ip in domain_ip_map.keys():
+            scan_results = scan_url_virustotal(ip)
+            result_message = f"URL: {ip}, Scan Results: {scan_results}"
+            print(result_message)
+            logging.info(result_message)
+
+        print("\nEmail Size Analysis:")
+        abnormal_emails = []
+        for index, row in data.iterrows():
+            size = row['Length']
+            size_message = analyze_email_size(size)
+            if size_message:
+                abnormal_emails.append(f"Email Subject: {row['Subject']} - {size_message}")
+        
+        if abnormal_emails:
+            for email in abnormal_emails:
+                print(email)
+                logging.info(email)
+        else:
+            no_abnormal_message = "No abnormal email sizes detected."
+            print(no_abnormal_message)
+            logging.info(no_abnormal_message)
+
+    finally:
+        client.close()
+        print(Fore.GREEN + "Resources cleaned up" + Style.RESET_ALL)
+        logging.info("Resources cleaned up")
+
+if __name__ == "__main__":
+    main()
